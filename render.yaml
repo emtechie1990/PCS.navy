@@ -1,4 +1,4 @@
-# Render Blueprint — one web service per site. Set the secret values (sync: false) in the Render dashboard.
+# Render Blueprint — one web service per site. Secrets live in the shared Environment Group `pcs-shared` (Render dashboard).
 services:
   - type: web
     name: pcs-navy
@@ -24,19 +24,4 @@ services:
         value: PCS.navy
       - key: ADMIN_EMAIL
         value: prescottmanisela@gmail.com
-      - key: MONGO_URL
-        sync: false
-      - key: RESEND_API_KEY
-        sync: false
-      - key: ADMIN_INITIAL_PASSWORD
-        sync: false
-      - key: PAYPAL_ENV
-        value: live
-      - key: STRIPE_SECRET_KEY
-        sync: false
-      - key: STRIPE_WEBHOOK_SECRET
-        sync: false
-      - key: PAYPAL_CLIENT_ID
-        sync: false
-      - key: PAYPAL_CLIENT_SECRET
-        sync: false
+      - fromGroup: pcs-shared  # MONGO_URL, ADMIN_INITIAL_PASSWORD, RESEND_API_KEY, STRIPE_*, PAYPAL_* (set once in the Render dashboard)
