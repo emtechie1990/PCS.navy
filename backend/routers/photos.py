@@ -1,11 +1,14 @@
 """Listing photos: visitors upload from phone or PC, bytes live in MongoDB (GridFS), served back from /api/photos/{id}."""
 
+from datetime import timedelta
+from typing import Literal
+
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import Response
 from motor.motor_asyncio import AsyncIOMotorGridFSBucket
 
 from lib.db import db
-from models.schemas import PhotoOut, new_id
+from models.schemas import PhotoOut, new_id, now_utc
 
 router = APIRouter(prefix="/photos", tags=["photos"])
 MAX_BYTES = 8 * 1024 * 1024
@@ -28,7 +31,7 @@ def _kind(head: bytes) -> str | None:
 
 
 @router.post("", response_model=PhotoOut)
-async def upload(file: UploadFile = File(...)):
+async def upload(file: UploadFile = File(...), purpose: Literal["listing", "inventory"] = "listing"):
     data = await file.read(MAX_BYTES + 1)
     if len(data) > MAX_BYTES:
         raise HTTPException(status_code=413, detail="Each photo must be under 8 MB")
@@ -36,8 +39,22 @@ async def upload(file: UploadFile = File(...)):
     if not kind:
         raise HTTPException(status_code=415, detail="Use a JPEG, PNG or WebP image")
     pid = new_id()
-    await bucket().upload_from_stream_with_id(pid, pid, data, metadata={"content_type": kind})
+    await bucket().upload_from_stream_with_id(pid, pid, data, metadata={"content_type": kind, "purpose": purpose, "created_at": now_utc()})
     return PhotoOut(id=pid, url=f"/api/photos/{pid}")
+
+
+async def sweep_orphans() -> int:
+    """Listing photos that never ended up on a listing within a day are dropped (abandoned forms, abuse)."""
+    cutoff = now_utc() - timedelta(days=1)
+    used = set()
+    async for l in db.listings.find({}, {"photos": 1}):
+        used.update(l.get("photos", []))
+    removed = 0
+    async for f in db["photos.files"].find({"metadata.purpose": "listing", "metadata.created_at": {"$lt": cutoff}}, {"_id": 1}):
+        if f"/api/photos/{f['_id']}" not in used:
+            await bucket().delete(f["_id"])
+            removed += 1
+    return removed
 
 
 @router.get("/{pid}")

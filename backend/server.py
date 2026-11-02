@@ -18,6 +18,7 @@ from lib.db import client, ensure_indexes  # noqa: E402
 from lib.seed_data import seed  # noqa: E402
 from lib.security import SecurityHeadersMiddleware, allowed_hosts, configured_origins  # noqa: E402
 from routers import admin, auth, market, payments, photos  # noqa: E402
+from routers.photos import sweep_orphans  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -29,6 +30,14 @@ async def _boot() -> None:
         await seed()
     except Exception as exc:  # never block boot on seeding
         logger.error("seed failed: %s", exc)
+    while True:
+        try:
+            removed = await sweep_orphans()
+            if removed:
+                logger.info("photo sweep removed %d orphaned uploads", removed)
+        except Exception as exc:
+            logger.error("photo sweep failed: %s", exc)
+        await asyncio.sleep(6 * 3600)
 
 
 @asynccontextmanager

@@ -11,9 +11,12 @@ import time
 from datetime import timedelta
 
 import httpx
-from fastapi import APIRouter, HTTPException, Request
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
 
+from lib.auth import get_optional_user
 from lib.brand import BRAND
 from lib.db import db
 from models.schemas import (CheckoutIn, CheckoutOut, FeaturePlan, PaymentConfig, PaymentProvider,
@@ -60,13 +63,15 @@ async def config():
 
 
 @router.post("/checkout", response_model=CheckoutOut)
-async def checkout(body: CheckoutIn):
+async def checkout(body: CheckoutIn, user: Optional[dict] = Depends(get_optional_user)):
     plan = next((p for p in PLANS if p.id == body.plan_id), None)
     if not plan:
         raise HTTPException(status_code=400, detail="Unknown plan")
     listing = await db.listings.find_one({"id": body.listing_id})
     if not listing:
         raise HTTPException(status_code=404, detail="Listing not found")
+    if listing.get("owner_id") and not (user and (user["id"] == listing["owner_id"] or user.get("role") == "admin")):
+        raise HTTPException(status_code=403, detail="Only the listing owner can buy Spotlight for it")
     via = VIA[body.provider]
     intent = {"id": new_id(), "listing_id": listing["id"], "plan_id": plan.id, "amount": plan.amount,
               "provider": body.provider, "via": via, "status": "pending", "created_at": now_utc()}

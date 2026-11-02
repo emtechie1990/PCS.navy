@@ -4,6 +4,7 @@ server-rendered local pages (/near/<station>/<town>/<topic>) plus sitemap/robots
 The local pages are real content for search engines: live listings for one town and topic,
 links into the app to browse or post, and the surrounding towns and topics."""
 
+import mimetypes
 import re
 from html import escape as e
 from pathlib import Path
@@ -15,6 +16,7 @@ from lib.brand import BRAND, SIBLINGS, disclaimer
 from lib.db import db
 
 router = APIRouter()
+mimetypes.add_type("font/woff2", ".woff2")  # Windows and slim images lack this mapping
 DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
 PUBLIC_URL = BRAND["url"]
 C = BRAND["colors"]
@@ -98,8 +100,7 @@ def _page(title: str, description: str, path: str, crumbs: list[tuple[str, str]]
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(description)}">
 <meta property="og:url" content="{PUBLIC_URL}{e(path)}"><meta property="og:site_name" content="{BRAND['domain']}">
 <meta property="og:image" content="{PUBLIC_URL}{BRAND['hero']['image']}">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+<style>@font-face{{font-family:Inter;src:url(/fonts/inter.woff2) format("woff2");font-weight:100 900;font-display:swap}}@font-face{{font-family:Oswald;src:url(/fonts/oswald.woff2) format("woff2");font-weight:200 700;font-display:swap}}</style>
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{crumb_ld}]}}</script>
 <style>
 :root{{--p:{C['primary']};--pd:{C['primary_dark']};--a:{C['accent']};--al:{CAMO['accent_light']};--ink:{C['ink']};--paper:{C['paper']};--sand:{C['sand']};--muted:{C['muted']};--border:{C['border']}}}

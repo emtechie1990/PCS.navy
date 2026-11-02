@@ -16,6 +16,13 @@ Dockerfile Builds the frontend, then runs uvicorn serving everything on one port
 render.yaml Render Blueprint for this site.
 ```
 
+## Keeping the three sites identical
+
+PCS.army is the only place code changes are made. After any change, run `scripts/sync-brands.sh "message"`
+from this repo (with `../pcs-navy` and `../pcs-airforce` checked out beside it): it commits and pushes Army, then
+mirrors the tree into both siblings, swapping only `render.yaml`, `backend/.env.example` and the README domain
+line, and pushes them. Render auto-deploys each site from its `main`.
+
 ## Run locally
 
 ```bash

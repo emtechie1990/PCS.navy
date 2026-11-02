@@ -176,7 +176,7 @@ export default function ListingDetail() {
               <p className="mt-3 text-xs text-muted-foreground">Meet in a public place or on post. Never wire money, pay deposits sight-unseen, or use gift cards.</p>
             </div>
             <ReportDialog listingId={l.id} />
-            {isOwner && !l.featured && (
+            {(isOwner || !l.owner_id) && !l.featured && (
               <Link to={`/upgrade/${l.id}`} className={cn(buttonVariants({ variant: "outline" }), "w-full gap-2 border-gold text-coyote")} data-testid="listing-upgrade-link">
                 <Star className="size-4" /> Spotlight this listing
               </Link>

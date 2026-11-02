@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
@@ -10,8 +11,9 @@ import Safety from "@/pages/Safety";
 import { ForgotPassword, Login, Register, ResetPassword } from "@/pages/Auth";
 import MyListings from "@/pages/MyListings";
 import Upgrade from "@/pages/Upgrade";
-import Admin from "@/pages/Admin";
 import NotFound from "@/pages/NotFound";
+
+const Admin = lazy(() => import("@/pages/Admin"));
 
 export default function App() {
   return (
@@ -30,7 +32,7 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/my-listings" element={<MyListings />} />
         <Route path="/upgrade/:id" element={<Upgrade />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

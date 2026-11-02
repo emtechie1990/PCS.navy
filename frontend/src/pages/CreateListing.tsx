@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Car, Home as HomeIcon, Info, Plus, Sofa, Upload, X } from "lucide-react";
+import { Car, Home as HomeIcon, Info, Sofa, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { VerifiedRibbon } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
