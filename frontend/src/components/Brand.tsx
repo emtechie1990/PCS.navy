@@ -2,14 +2,13 @@ import { Link } from "react-router-dom";
 import { useBrand } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
-/** Shared unit-patch mark for all three sites: near-black shield, gold edge and star. */
+/** Shared unit-patch mark for all three sites: black shield, gold star with the arrow inside. */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 40 46" className={cn("h-9 w-8", className)} aria-hidden="true">
       <path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="#1A1A1A" stroke="#C8A951" strokeWidth="2" />
-      <path d="M20 5.5 L34 10.2 V22 C34 31.5 27.8 37.4 20 40.6 C12.2 37.4 6 31.5 6 22 V10.2 Z" fill="none" stroke="#C8A951" strokeOpacity="0.45" strokeWidth="0.8" />
-      <polygon points="20,11 22.6,18.2 30.2,18.4 24.2,23 26.4,30.2 20,26 13.6,30.2 15.8,23 9.8,18.4 17.4,18.2" fill="#C8A951" />
-      <path d="M11 34 L20 29.5 L29 34" fill="none" stroke="#F5F4F0" strokeWidth="2" strokeLinecap="square" />
+      <polygon points="20,10 22.8,17.6 30.8,17.8 24.4,22.7 26.7,30.4 20,25.8 13.3,30.4 15.6,22.7 9.2,17.8 17.2,17.6" fill="#C8A951" />
+      <path d="M15 26.5 L20 20.5 L25 26.5" fill="none" stroke="#1A1A1A" strokeWidth="2.2" strokeLinecap="square" strokeLinejoin="miter" />
     </svg>
   );
 }

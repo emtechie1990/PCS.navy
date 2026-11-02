@@ -14,12 +14,11 @@ const BRANDS = {
   airforce: { primary: "#00308F", accent: "#FFC72C", base: "#141E33", camo: ["#5D8AA8", "#A7A9AC", "#0B1426", "#00308F"] },
 };
 
-// Shared mark (components/Brand.tsx): near-black shield, gold edge and star.
+// Shared mark (components/Brand.tsx): black shield, gold star with the arrow inside.
 const MARK = `<svg viewBox="0 0 40 46" xmlns="http://www.w3.org/2000/svg">
 <path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="#1A1A1A" stroke="#C8A951" stroke-width="2"/>
-<path d="M20 5.5 L34 10.2 V22 C34 31.5 27.8 37.4 20 40.6 C12.2 37.4 6 31.5 6 22 V10.2 Z" fill="none" stroke="#C8A951" stroke-opacity=".45" stroke-width=".8"/>
-<polygon points="20,11 22.6,18.2 30.2,18.4 24.2,23 26.4,30.2 20,26 13.6,30.2 15.8,23 9.8,18.4 17.4,18.2" fill="#C8A951"/>
-<path d="M11 34 L20 29.5 L29 34" fill="none" stroke="#F5F4F0" stroke-width="2" stroke-linecap="square"/></svg>`;
+<polygon points="20,10 22.8,17.6 30.8,17.8 24.4,22.7 26.7,30.4 20,25.8 13.3,30.4 15.6,22.7 9.2,17.8 17.2,17.6" fill="#C8A951"/>
+<path d="M15 26.5 L20 20.5 L25 26.5" fill="none" stroke="#1A1A1A" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"/></svg>`;
 
 // Digital-camo tile + radial veil, then the mark; `maskable` keeps the mark inside the 80% safe zone.
 function icon(b, maskable) {
