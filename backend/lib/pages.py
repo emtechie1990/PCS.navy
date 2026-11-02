@@ -18,6 +18,23 @@ router = APIRouter()
 DIST = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
 PUBLIC_URL = BRAND["url"]
 C = BRAND["colors"]
+CAMO = BRAND["camo"]
+
+# Same marks as frontend/src/components/Brand.tsx, inlined for the server-rendered pages.
+MARK = {
+    "shield": f'<svg viewBox="0 0 40 46" class="mark"><path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="{C["primary"]}" stroke="{C["accent"]}" stroke-width="2"/>'
+              f'<polygon points="20,11 22.6,18.2 30.2,18.4 24.2,23 26.4,30.2 20,26 13.6,30.2 15.8,23 9.8,18.4 17.4,18.2" fill="{C["accent"]}"/>'
+              f'<path d="M11 34 L20 29.5 L29 34" fill="none" stroke="{C["paper"]}" stroke-width="2"/></svg>',
+    "anchor": f'<svg viewBox="0 0 40 46" class="mark"><path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="{C["primary"]}" stroke="{C["accent"]}" stroke-width="2"/>'
+              f'<circle cx="20" cy="11" r="3" fill="none" stroke="{C["accent"]}" stroke-width="2"/>'
+              f'<path d="M20 14 V36 M13 19 H27 M9 27 C10 33 15 36 20 36 C25 36 30 33 31 27" fill="none" stroke="{C["accent"]}" stroke-width="2.2" stroke-linecap="round"/>'
+              f'<path d="M6 27 L9 24 L12 27 M28 27 L31 24 L34 27" fill="none" stroke="{C["accent"]}" stroke-width="2" stroke-linecap="round"/></svg>',
+    "wings": f'<svg viewBox="0 0 64 40" class="mark"><path d="M32 4 L2 14 L14 18 L4 24 L20 24 L32 36 L44 24 L60 24 L50 18 L62 14 Z" fill="{C["primary"]}" stroke="{C["accent"]}" stroke-width="1.6" stroke-linejoin="round"/>'
+             f'<polygon points="32,10 34.4,16.8 41.6,17 35.9,21.4 38,28.2 32,24.2 26,28.2 28.1,21.4 22.4,17 29.6,16.8" fill="{C["accent"]}"/></svg>',
+}[BRAND["logo"]]
+HERO_OPEN = (f'<section class="hero camo"><img class="photo" src="{BRAND["hero"]["image"]}" alt="{e(BRAND["hero"]["alt"])}">'
+             '<div class="veil"></div><div class="wrap"><div class="inner"><div class="crumbs">%CRUMBS%</div>')
+HERO_CLOSE = '</div></div><div class="bar"></div></section>'
 
 # (slug, label, category, extra Mongo filter) — the filter narrows a category to the topic.
 _rx = lambda *words: {"$regex": "|".join(words), "$options": "i"}  # noqa: E731
@@ -93,30 +110,47 @@ def _page(title: str, description: str, path: str, crumbs: list[tuple[str, str]]
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">{{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{crumb_ld}]}}</script>
 <style>
-:root{{--p:{C['primary']};--pd:{C['primary_dark']};--a:{C['accent']};--ink:{C['ink']};--paper:{C['paper']};--sand:{C['sand']};--muted:{C['muted']};--border:{C['border']}}}
-*{{box-sizing:border-box;margin:0;padding:0}}body{{font-family:Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5}}
+:root{{--p:{C['primary']};--pd:{C['primary_dark']};--a:{C['accent']};--al:{CAMO['accent_light']};--ink:{C['ink']};--paper:{C['paper']};--sand:{C['sand']};--muted:{C['muted']};--border:{C['border']}}}
+*{{box-sizing:border-box;margin:0;padding:0}}body{{font-family:Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}}
 a{{color:inherit;text-decoration:none}}h1,h2,h3{{font-family:Oswald,'Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.02em;line-height:1.05}}
-.wrap{{max-width:1180px;margin:0 auto;padding:0 20px}}
-.banner{{background:var(--ink);color:rgba(255,255,255,.75);font-size:11px;padding:6px 0}}.banner a{{color:var(--a);float:right}}
-header{{background:var(--paper);border-bottom:1px solid var(--border);position:sticky;top:0}}header .wrap{{display:flex;align-items:center;gap:16px;height:64px}}
-.logo{{font-family:Oswald;font-weight:700;font-size:21px;letter-spacing:.06em;text-transform:uppercase}}.logo b{{color:var(--a)}}
-header nav{{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}}header nav a,.btn{{padding:8px 12px;font-size:14px;font-weight:500;border-radius:6px}}
-.btn{{display:inline-block;background:var(--p);color:#fff;font-weight:600}}.btn:hover{{background:var(--pd)}}.btn.o{{background:#fff;border:1px solid var(--border);color:var(--ink)}}
-.hero{{background:var(--p);color:#fff;padding:40px 0;border-bottom:3px solid var(--a)}}.hero .crumbs{{font-size:13px;color:rgba(255,255,255,.7)}}.hero .crumbs a:hover{{color:#fff}}
-.hero h1{{font-size:clamp(32px,5vw,56px);margin-top:12px}}.hero p{{margin-top:12px;max-width:720px;color:rgba(255,255,255,.85)}}.hero .cta{{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}}.hero .btn{{background:var(--a);color:var(--ink)}}
-section{{margin-top:36px}}section h2{{font-size:24px;margin-bottom:12px}}
+img{{display:block;max-width:100%}}.wrap{{max-width:1240px;margin:0 auto;padding:0 24px}}
+.banner{{background:var(--ink);color:rgba(255,255,255,.72);font-size:11px}}.banner .wrap{{display:flex;align-items:center;gap:8px;padding-top:6px;padding-bottom:6px}}
+.banner .dot{{width:8px;height:8px;border-radius:50%;background:var(--al);flex-shrink:0}}.banner a{{margin-left:auto;color:var(--al);white-space:nowrap}}
+header{{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}}
+header .wrap{{display:flex;align-items:center;height:64px;gap:16px}}.logo{{display:flex;align-items:center;gap:10px}}.mark{{height:36px;width:auto}}
+.logo-text{{font-family:Oswald;font-weight:700;font-size:21px;letter-spacing:.06em;text-transform:uppercase}}.logo-text b{{color:var(--a)}}
+.navs{{display:flex;gap:2px;margin-left:16px}}.navs a{{padding:8px 12px;font-size:14px;font-weight:500;color:color-mix(in srgb,var(--ink) 75%,transparent)}}.navs a:hover{{color:var(--ink)}}
+.hdr-right{{margin-left:auto;display:flex;gap:8px;align-items:center}}
+.btn{{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:14px;border-radius:6px;padding:10px 16px;border:1px solid transparent}}
+.btn-primary{{background:var(--p);color:#fff}}.btn-primary:hover{{background:var(--pd)}}.btn-outline{{background:#fff;border-color:var(--border);color:var(--ink)}}.btn-outline:hover{{background:var(--sand)}}
+.camo{{background-color:{CAMO['base']};background-image:
+  conic-gradient(from 90deg at 12px 12px,{CAMO['blocks'][0]} 25%,transparent 0) 0 0/48px 36px,
+  conic-gradient(from 180deg at 18px 6px,{CAMO['blocks'][1]} 25%,transparent 0) 20px 14px/64px 44px,
+  conic-gradient(from 0deg at 8px 8px,{CAMO['blocks'][2]} 25%,transparent 0) 6px 22px/40px 52px,
+  conic-gradient(from 270deg at 10px 16px,{CAMO['blocks'][3]} 25%,transparent 0) 30px 4px/72px 60px}}
+.hero{{position:relative;overflow:hidden;color:#fff}}.hero .photo{{position:absolute;inset:0 0 0 auto;width:58%;height:100%;object-fit:cover;object-position:{BRAND['hero']['position']}}}
+.hero .veil{{position:absolute;inset:0;background:linear-gradient(100deg,rgba({CAMO['veil']},0.97) 0%,rgba({CAMO['veil']},0.88) 45%,rgba({CAMO['veil']},0.35) 100%)}}
+.hero .inner{{position:relative;padding:72px 0 100px;max-width:720px}}.hero .crumbs{{font-size:13px;color:rgba(255,255,255,.7)}}.hero .crumbs a:hover{{color:#fff}}
+.hero h1{{margin-top:18px;font-size:clamp(40px,6vw,72px);font-weight:700;line-height:.95;letter-spacing:.03em}}.hero p{{margin-top:22px;font-size:18px;color:rgba(255,255,255,.8);max-width:600px}}
+.hero .cta{{margin-top:28px;display:flex;gap:12px;flex-wrap:wrap}}.hero .btn{{height:52px;padding:0 22px;font-size:16px;background:var(--al);color:var(--ink)}}
+.hero .btn.o{{background:transparent;border-color:rgba(255,255,255,.35);color:#fff}}.hero .bar{{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--a)}}
+.wrap>section{{margin-top:40px}}section h2{{font-size:26px;margin-bottom:12px}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}}
-.card{{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}}.card img,.noimg{{aspect-ratio:4/3;object-fit:cover;width:100%;background:var(--sand)}}
-.card .bd{{padding:12px;display:grid;gap:4px}}.card b{{font-family:Oswald;font-size:22px}}.card small{{color:var(--muted)}}
+.card{{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}}.card:hover{{transform:translateY(-4px);box-shadow:0 16px 32px rgba(10,20,40,.12)}}
+.card img,.noimg{{aspect-ratio:4/3;object-fit:cover;width:100%;background:var(--sand)}}.card .bd{{padding:12px;display:grid;gap:4px}}.card b{{font-family:Oswald;font-size:22px}}.card small{{color:var(--muted)}}
 .links{{display:flex;flex-wrap:wrap;gap:8px}}.links a{{background:#fff;border:1px solid var(--border);border-left:3px solid var(--p);border-radius:4px;padding:8px 12px;font-size:14px}}.links a:hover{{background:var(--sand)}}
-.empty{{background:#fff;border:1px dashed var(--border);padding:28px;text-align:center;border-radius:6px}}
-footer{{margin-top:56px;background:var(--ink);color:rgba(255,255,255,.7);font-size:12px;padding:24px 0}}footer a{{color:var(--a)}}
+.empty{{background:#fff;border:1px dashed var(--border);padding:28px;text-align:center;border-radius:6px;max-width:420px}}.empty .btn{{background:var(--p);color:#fff;margin-top:8px}}
+footer{{position:relative;margin-top:96px;color:#fff}}footer .shade{{position:absolute;inset:0;background:rgba(5,10,20,.9)}}footer .wrap{{position:relative;padding:32px 24px;font-size:12px;color:rgba(255,255,255,.7)}}footer a{{color:var(--al)}}
+@media (max-width:1100px){{.navs{{display:none}}}}@media (max-width:900px){{.hero .photo{{width:100%;opacity:.3}}}}
 </style></head><body>
-<div class="banner"><div class="wrap">{e(disclaimer())} <a href="/safety">Learn more</a></div></div>
-<header><div class="wrap"><a class="logo" href="/">{BRAND['domain'].split('.')[0]}<b>.</b>{BRAND['domain'].split('.')[1]}</a>
-<nav><a href="/search?category=housing">Find housing</a><a href="/search?category=vehicle">Vehicles</a><a href="/search?category=goods">Household goods</a><a href="/resources">PCS resources</a><a class="btn" href="/create">+ Post listing</a></nav></div></header>
+<div class="banner"><div class="wrap"><span class="dot"></span><span>{e(disclaimer())}</span><a href="/safety">Learn more</a></div></div>
+<header><div class="wrap">
+<a href="/" class="logo">{MARK}<span class="logo-text">{BRAND['domain'].split('.')[0]}<b>.</b>{BRAND['domain'].split('.')[1]}</span></a>
+<nav class="navs"><a href="/search?category=housing">Find housing</a><a href="/search?category=vehicle">Vehicles</a><a href="/search?category=goods">Household goods</a><a href="/near">{e(BRAND['stations'].capitalize())}</a><a href="/resources">PCS resources</a><a href="/safety">Safety</a></nav>
+<div class="hdr-right"><a href="/login" class="btn btn-outline">Sign in</a><a href="/create" class="btn btn-primary">+ Post listing</a></div>
+</div></header>
 <main>{body.replace('%CRUMBS%', crumb_html)}</main>
-<footer><div class="wrap">{e(disclaimer())} Always verify listings in person and never wire money or pay with gift cards.<br>Also serving: {sibs}</div></footer>
+<footer class="camo"><div class="shade"></div><div class="wrap">{e(disclaimer())} Always verify listings in person and never wire money or pay with gift cards.<br>Also serving: {sibs}</div></footer>
 </body></html>"""
     return HTMLResponse(html)
 
@@ -125,9 +159,9 @@ footer{{margin-top:56px;background:var(--ink);color:rgba(255,255,255,.7);font-si
 async def near_index():
     insts = await _installations()
     links = "".join(f'<a href="/near/{i["id"]}">{e(i["name"])} — {e(i["city"])}, {e(i["state"])}</a>' for i in insts)
-    body = f"""<div class="hero"><div class="wrap"><div class="crumbs">%CRUMBS%</div>
+    body = f"""{HERO_OPEN}
 <h1>Housing, vehicles and household goods near every {BRAND['branch']} {e(BRAND['station'])}</h1>
-<p>Pick your {e(BRAND['station'])} to see the towns around the gate and what {BRAND['members']} are listing there right now.</p></div></div>
+<p>Pick your {e(BRAND['station'])} to see the towns around the gate and what {BRAND['members']} are listing there right now.</p>{HERO_CLOSE}
 <div class="wrap"><section><h2>{e(BRAND['stations']).capitalize()}</h2><div class="links">{links}</div></section></div>"""
     return _page(f"Near every {BRAND['branch']} {BRAND['station']}",
                  f"Local PCS boards for every {BRAND['branch']} {BRAND['station']}: housing, vehicles and household goods by town.",
@@ -141,11 +175,11 @@ async def near_installation(inst_id: str):
     areas = "".join(f'<a href="/near/{inst_id}/{slug(a)}">{e(a)}</a>' for a in inst["areas"])
     topics = "".join(f'<a href="/near/{inst_id}/{slug(inst["areas"][0])}/{s}">{e(l)}</a>' for s, l, _, _ in TOPICS)
     cards = "".join(_card(l) for l in listings) or f'<div class="empty">Nothing posted at {e(inst["name"])} yet. <a class="btn" href="/create?base={inst_id}">Be the first</a></div>'
-    body = f"""<div class="hero"><div class="wrap"><div class="crumbs">%CRUMBS%</div>
+    body = f"""{HERO_OPEN}
 <h1>PCS to {e(inst['name'])}: housing, vehicles and household goods</h1>
 <p>{e(inst['tagline'])} {e(inst['name'])} sits by {e(inst['city'])}, {e(inst['state'])}. Browse rentals, homes for sale, cars, trucks and
 furniture listed by {BRAND['members']} and families in {e(", ".join(a for a in inst['areas'] if not a.startswith('On ')))}.</p>
-<div class="cta"><a class="btn" href="/installation/{inst_id}">Open the {e(inst['short_name'])} board</a><a class="btn o" style="color:#fff" href="/create?base={inst_id}">Post a listing</a></div></div></div>
+<div class="cta"><a class="btn" href="/installation/{inst_id}">Open the {e(inst['short_name'])} board</a><a class="btn o" href="/create?base={inst_id}">Post a listing</a></div>{HERO_CLOSE}
 <div class="wrap"><section><h2>Latest at {e(inst['short_name'])}</h2><div class="grid">{cards}</div></section>
 <section><h2>Towns around {e(inst['short_name'])}</h2><div class="links">{areas}</div></section>
 <section><h2>Browse by topic</h2><div class="links">{topics}</div></section>
@@ -163,11 +197,11 @@ async def near_area(inst_id: str, area_slug: str):
     topics = "".join(f'<a href="/near/{inst_id}/{area_slug}/{s}">{e(l)} in {e(area)}</a>' for s, l, _, _ in TOPICS)
     others = "".join(f'<a href="/near/{inst_id}/{slug(a)}">{e(a)}</a>' for a in inst["areas"] if a != area)
     cards = "".join(_card(l) for l in listings) or f'<div class="empty">Nothing posted in {e(area)} yet. <a class="btn" href="/create?base={inst_id}">Be the first</a></div>'
-    body = f"""<div class="hero"><div class="wrap"><div class="crumbs">%CRUMBS%</div>
+    body = f"""{HERO_OPEN}
 <h1>{e(area)} near {e(inst['name'])}</h1>
 <p>Everything {BRAND['members']} and families are listing in {e(area)}, {e(inst['state'])} — a {e(inst['short_name'])} commute. Rentals and homes for sale,
 cars and trucks before an OCONUS move, and furniture over the weight allowance.</p>
-<div class="cta"><a class="btn" href="/search?installation_id={inst_id}&area={e(area)}">Browse all in {e(area)}</a><a class="btn o" style="color:#fff" href="/create?base={inst_id}">Post in {e(area)}</a></div></div></div>
+<div class="cta"><a class="btn" href="/search?installation_id={inst_id}&area={e(area)}">Browse all in {e(area)}</a><a class="btn o" href="/create?base={inst_id}">Post in {e(area)}</a></div>{HERO_CLOSE}
 <div class="wrap"><section><h2>Latest in {e(area)}</h2><div class="grid">{cards}</div></section>
 <section><h2>{e(area)} by topic</h2><div class="links">{topics}</div></section>
 <section><h2>Other towns near {e(inst['short_name'])}</h2><div class="links">{others}</div></section></div>"""
@@ -192,11 +226,11 @@ async def near_topic(inst_id: str, area_slug: str, topic: str):
         f'<div class="empty">No {e(label.lower())} listed in {e(area)} right now. Check <a href="/search?installation_id={inst_id}&category={category}">all {e(inst["short_name"])} {e(CATEGORY_LABEL[category].lower())}</a> '
         f'or <a class="btn" href="/create?base={inst_id}&type={category}">post yours</a>.</div>')
     title = f"{label} in {area} near {inst['name']}"
-    body = f"""<div class="hero"><div class="wrap"><div class="crumbs">%CRUMBS%</div>
+    body = f"""{HERO_OPEN}
 <h1>{e(title)}</h1>
 <p>{e(label)} in {e(area)}, {e(inst['state'])}, listed by {BRAND['members']} and military families PCSing to or from {e(inst['name'])}.
 Contact sellers directly — no fees to browse. Sellers who sign up with a {e(BRAND['verified'])} email carry the Verified Military ribbon.</p>
-<div class="cta"><a class="btn" href="/search?installation_id={inst_id}&area={e(area)}&category={category}">Browse in the app</a><a class="btn o" style="color:#fff" href="/create?base={inst_id}&type={category}">Post {e(label.lower())}</a></div></div></div>
+<div class="cta"><a class="btn" href="/search?installation_id={inst_id}&area={e(area)}&category={category}">Browse in the app</a><a class="btn o" href="/create?base={inst_id}&type={category}">Post {e(label.lower())}</a></div>{HERO_CLOSE}
 <div class="wrap"><section><h2>{len(listings)} listed now</h2><div class="grid">{cards}</div></section>
 <section><h2>More {e(CATEGORY_LABEL[category].lower())} in {e(area)}</h2><div class="links">{siblings}</div></section>
 <section><h2>{e(label)} in other towns near {e(inst['short_name'])}</h2><div class="links">{nearby}</div></section></div>"""

@@ -37,7 +37,7 @@ export default function Home() {
     <div>
       {/* HERO */}
       <section className="camo relative overflow-hidden text-paper" data-testid="home-hero">
-        <img src={brand.hero.image} alt={brand.hero.alt} className="absolute inset-0 h-full w-full object-cover opacity-40 lg:inset-y-0 lg:left-auto lg:right-0 lg:w-[55%] lg:opacity-100" />
+        <img src={brand.hero.image} alt={brand.hero.alt} style={{ objectPosition: brand.hero.position }} className="absolute inset-0 h-full w-full object-cover opacity-40 lg:inset-y-0 lg:left-auto lg:right-0 lg:w-[55%] lg:opacity-100" />
         <div className="camo-veil absolute inset-0" />
         <div className="relative mx-auto grid max-w-7xl gap-10 px-4 pb-24 pt-16 sm:px-6 lg:grid-cols-12 lg:px-8 lg:pb-32 lg:pt-24">
           <div className="lg:col-span-7">

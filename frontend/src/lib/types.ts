@@ -33,7 +33,7 @@ export interface Brand {
   theme: string;
   headline: [string, string];
   lede: string;
-  hero: { image: string; alt: string };
+  hero: { image: string; alt: string; position: string };
   side: { image: string; alt: string };
   default_installation: string;
   disclaimer: string;

@@ -154,13 +154,14 @@ COMMON_RESOURCES = [
 
 BRANDS = {
     "army": {
-        "slug": "army", "domain": "PCS.army", "url": "https://pcs.army", "branch": "Army",
+        "slug": "army",
+        "camo": {"base": "#23261A", "blocks": ["rgba(75,83,32,0.55)", "rgba(129,97,60,0.35)", "rgba(26,26,26,0.55)", "rgba(138,143,94,0.25)"], "veil": "20,22,14", "accent_light": "#C8A951"}, "domain": "PCS.army", "url": "https://pcs.army", "branch": "Army",
         "members": "soldiers", "member": "soldier", "station": "installation", "stations": "installations",
         "verified": ".mil", "logo": "shield", "theme": "#4B5320",
         "headline": ["Your next duty station", "starts here."],
         "lede": "Find a home near the gate, sell the truck before you ship out, and pass the couch to the family "
                 "moving in. One marketplace, organized by installation, built for soldiers and their families.",
-        "hero": {"image": "/img/hero-army.jpg", "alt": "Soldier in uniform embracing her daughter"},
+        "hero": {"image": "/img/hero-army.jpg", "alt": "Soldier in uniform embracing her daughter", "position": "50% 50%"},
         "side": {"image": "/img/house-2.jpg", "alt": "Single-family home near post"},
         "installations": ARMY, "default_installation": "fort-bragg",
         "resources": [
@@ -177,13 +178,14 @@ BRANDS = {
                    "ink": "#1A1A1A", "paper": "#F5F4F0", "sand": "#E9E5DA", "muted": "#5B574E", "border": "#DAD5C8"},
     },
     "navy": {
-        "slug": "navy", "domain": "PCS.navy", "url": "https://pcs.navy", "branch": "Navy",
+        "slug": "navy",
+        "camo": {"base": "#0D1B30", "blocks": ["rgba(38,70,120,0.55)", "rgba(80,110,150,0.35)", "rgba(6,12,24,0.60)", "rgba(120,140,170,0.25)"], "veil": "5,12,26", "accent_light": "#E8D9A8"}, "domain": "PCS.navy", "url": "https://pcs.navy", "branch": "Navy",
         "members": "Sailors", "member": "Sailor", "station": "duty station", "stations": "duty stations",
         "verified": ".navy.mil", "logo": "anchor", "theme": "#0B1F3A",
         "headline": ["Your next homeport", "starts here."],
         "lede": "Find a home near the pier, sell the car before you report aboard, and pass the furniture to the family "
                 "checking in. One marketplace, organized by duty station, built for Sailors and their families.",
-        "hero": {"image": "/img/hero-navy.jpg", "alt": "Aircraft carrier underway in San Diego Bay"},
+        "hero": {"image": "/img/hero-navy.jpg", "alt": "Aircraft carrier underway in San Diego Bay", "position": "50% 100%"},
         "side": {"image": "/img/side-navy.jpg", "alt": "Sailor greeting family at a homecoming"},
         "installations": NAVY, "default_installation": "norfolk",
         "resources": [
@@ -199,13 +201,14 @@ BRANDS = {
                    "ink": "#0A1424", "paper": "#F6F5F1", "sand": "#E7E4DA", "muted": "#55606F", "border": "#D8D5CB"},
     },
     "airforce": {
-        "slug": "airforce", "domain": "PCS.airforce", "url": "https://pcs.airforce", "branch": "Air Force",
+        "slug": "airforce",
+        "camo": {"base": "#141E33", "blocks": ["rgba(93,138,168,0.45)", "rgba(167,169,172,0.30)", "rgba(11,20,38,0.60)", "rgba(0,48,143,0.40)"], "veil": "8,14,30", "accent_light": "#FFC72C"}, "domain": "PCS.airforce", "url": "https://pcs.airforce", "branch": "Air Force",
         "members": "Airmen", "member": "Airman", "station": "base", "stations": "bases",
         "verified": ".af.mil", "logo": "wings", "theme": "#00308F",
         "headline": ["Your next assignment", "starts here."],
         "lede": "Find a home outside the gate, sell the truck before your PCS, and pass the couch to the family arriving "
                 "on the next assignment. One marketplace, organized by base, built for Airmen and their families.",
-        "hero": {"image": "/img/hero-airforce.jpg", "alt": "Fighter jet on the flight line at sunset"},
+        "hero": {"image": "/img/hero-airforce.jpg", "alt": "Fighter jet on the flight line at sunset", "position": "50% 50%"},
         "side": {"image": "/img/side-airforce.jpg", "alt": "Families walking the flight line beside parked military aircraft"},
         "installations": AIRFORCE, "default_installation": "jbsa-lackland",
         "resources": [
