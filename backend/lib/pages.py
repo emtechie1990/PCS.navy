@@ -139,7 +139,7 @@ footer{{position:relative;margin-top:96px;color:#fff}}footer .shade{{position:ab
 <div class="banner"><div class="wrap"><span class="dot"></span><span>{e(disclaimer())}</span><a href="/safety">Learn more</a></div></div>
 <header><div class="wrap">
 <a href="/" class="logo">{MARK}<span class="logo-text">{BRAND['domain'].split('.')[0]}<b>.</b>{BRAND['domain'].split('.')[1]}</span></a>
-<nav class="navs"><a href="/search?category=housing">Find housing</a><a href="/search?category=vehicle">Vehicles</a><a href="/search?category=goods">Household goods</a><a href="/near">{e(BRAND['stations'].capitalize())}</a><a href="/resources">PCS resources</a><a href="/safety">Safety</a></nav>
+<nav class="navs"><a href="/search?category=housing">Find housing</a><a href="/search?category=vehicle">Vehicles</a><a href="/search?category=goods">Household goods</a><a href="/near">{e(BRAND['stations'].capitalize())}</a><a href="/tools">PCS toolkit</a><a href="/resources">PCS resources</a><a href="/safety">Safety</a></nav>
 <div class="hdr-right"><a href="/login" class="btn btn-outline">Sign in</a><a href="/create" class="btn btn-primary">+ Post listing</a></div>
 </div></header>
 <main>{body.replace('%CRUMBS%', crumb_html)}</main>
@@ -269,6 +269,7 @@ async def manifest():
             {"name": "Find housing", "url": "/search?category=housing&source=pwa", "icons": [{"src": f"{icons}/icon-96.png", "sizes": "96x96"}]},
             {"name": "Post a listing", "url": "/create?source=pwa", "icons": [{"src": f"{icons}/icon-96.png", "sizes": "96x96"}]},
             {"name": "Vehicles", "url": "/search?category=vehicle&source=pwa", "icons": [{"src": f"{icons}/icon-96.png", "sizes": "96x96"}]},
+            {"name": "PCS toolkit", "url": "/tools?source=pwa", "icons": [{"src": f"{icons}/icon-96.png", "sizes": "96x96"}]},
             {"name": "PCS resources", "url": "/resources?source=pwa", "icons": [{"src": f"{icons}/icon-96.png", "sizes": "96x96"}]},
         ],
     }, media_type="application/manifest+json")

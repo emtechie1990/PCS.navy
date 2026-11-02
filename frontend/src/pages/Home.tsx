@@ -133,7 +133,10 @@ export default function Home() {
             <p className="mt-3 text-muted-foreground">
               Every {brand.station} gets its own board with local sections for the towns {brand.members} actually live in.
             </p>
-            <Link to="/resources" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ocp hover:underline" data-testid="home-resources-link">
+            <Link to="/tools" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-ocp hover:underline" data-testid="home-tools-link">
+              PCS toolkit: what the move pays, countdown, photo inventory <ArrowRight className="size-4" />
+            </Link>
+            <Link to="/resources" className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-ocp hover:underline" data-testid="home-resources-link">
               Official PCS resources <ArrowRight className="size-4" />
             </Link>
           </div>

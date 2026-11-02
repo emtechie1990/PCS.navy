@@ -23,6 +23,7 @@ const NAV = [
   { to: "/search?category=housing", label: "Find housing", id: "find-housing" },
   { to: "/search?category=vehicle", label: "Vehicles", id: "vehicles" },
   { to: "/search?category=goods", label: "Household goods", id: "goods" },
+  { to: "/tools", label: "PCS toolkit", id: "tools" },
   { to: "/resources", label: "PCS resources", id: "resources" },
   { to: "/safety", label: "Safety", id: "safety" },
 ];
@@ -179,6 +180,7 @@ function Footer() {
         <div className="md:col-span-4">
           <h4 className="stencil text-sm text-gold">Trust & safety</h4>
           <ul className="mt-3 space-y-2 text-sm text-paper/75">
+            <li><Link to="/tools" className="hover:text-paper" data-testid="footer-tools-link">PCS toolkit: move money, countdown, inventory</Link></li>
             <li><Link to="/resources" className="hover:text-paper" data-testid="footer-resources-link">Official PCS resources</Link></li>
             <li><Link to="/safety#scams" className="hover:text-paper" data-testid="footer-scam-link">Report a scam</Link></li>
             <li><Link to="/safety#prohibited" className="hover:text-paper" data-testid="footer-prohibited-link">Prohibited listings</Link></li>

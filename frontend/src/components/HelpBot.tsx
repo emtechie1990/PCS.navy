@@ -5,6 +5,7 @@ import { LogoMark } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useBrand, useInstallations, useSelectedBase } from "@/lib/hooks";
+import { RATES_YEAR } from "@/lib/pcs-rates";
 import { cn } from "@/lib/utils";
 
 /** Site guide: answers from the site's own knowledge, runs entirely in the browser (no outside service).
@@ -28,7 +29,7 @@ export function HelpBot() {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const end = useRef<HTMLDivElement>(null);
 
-  const START: string[] = ["Find housing", "Sell something", "Choose my " + brand.station, "Is this a scam?", "Get verified"];
+  const START: string[] = ["Find housing", "Sell something", "Move money", "Countdown", "Is this a scam?"];
 
   const answer = (q: string): Msg => {
     const s = q.toLowerCase();
@@ -53,7 +54,13 @@ export function HelpBot() {
       return { from: "bot", body: <>Use the picker at the top of any page, or open the <A to={`/installation/${baseId}`}>{base?.name ?? "board"}</A>. {bases?.length ?? ""} {brand.stations} have boards, each with local sections for the towns around the gate{base ? ` — at ${short}: ${base.areas.filter((a) => !a.startsWith("On ")).slice(0, 4).join(", ")}` : ""}.</>, chips: ["Find housing", "Vehicles"] };
     if (has("account", "log", "sign", "password", "reset", "forgot", "register"))
       return { from: "bot", body: <><A to="/login">Sign in</A> or <A to="/register">create an account</A>. Forgot your password? <A to="/forgot-password">Request a reset link</A> — it arrives by email and expires in an hour. Your listings live under <A to="/my-listings">My listings</A>.</>, chips: ["Get verified"] };
-    if (has("resource", "orders", "move", "pcs", "checklist", "dps", "shipment", "entitle", "tle", "dla", "official"))
+    if (has("calculat", "dla", "malt", "tle", "per diem", "entitle", "allowance", "how much", "money", "mileage", "reimburs"))
+      return { from: "bot", body: <>The <A to="/tools?tab=money">Move money estimator</A> adds up DLA for your grade, mileage (MALT), travel per diem and temporary lodging (TLE) with the {RATES_YEAR} rates. It runs on your phone; nothing is sent anywhere.</>, chips: ["Countdown", "Inventory"] };
+    if (has("countdown", "checklist", "timeline", "report date", "days left", "when should"))
+      return { from: "bot", body: <>Enter your report date in the <A to="/tools?tab=countdown">Countdown & checklist</A> and you get a dated to-do list from 90 days out to your first month on station, with checkboxes and an add-to-calendar button.</>, chips: ["Move money", "Inventory"] };
+    if (has("inventory", "claim", "damage", "lost", "broke", "movers", "serial"))
+      return { from: "bot", body: <>Use the <A to="/tools?tab=inventory">Photo inventory</A>: room by room, with a photo per item, declared values and a CSV export. It's the proof a DPS loss or damage claim needs.</>, chips: ["Countdown", "Move money"] };
+    if (has("resource", "orders", "move", "pcs", "dps", "shipment", "official"))
       return { from: "bot", body: <>{brand.domain} is a marketplace — orders, entitlements and shipments run through official programs. Our <A to="/resources">PCS resources</A> page lists Plan My Move, DPS, HOMES.mil, BAH lookup and {brand.branch} relocation links, each labeled with its source.</>, chips: ["Find housing", "Choose my " + brand.station] };
     if (has("app", "install", "phone", "home screen"))
       return { from: "bot", body: <>{brand.domain} installs like an app: on Android/desktop Chrome use the browser menu → <em>Install app</em>; on iPhone use Safari → Share → <em>Add to Home Screen</em>. Same listings, full screen.</>, chips: ["Find housing"] };

@@ -8,6 +8,7 @@ import ListingDetail from "@/pages/ListingDetail";
 import CreateListing from "@/pages/CreateListing";
 import Resources from "@/pages/Resources";
 import Safety from "@/pages/Safety";
+import Tools from "@/pages/Tools";
 import { ForgotPassword, Login, Register, ResetPassword } from "@/pages/Auth";
 import MyListings from "@/pages/MyListings";
 import Upgrade from "@/pages/Upgrade";
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/create" element={<CreateListing />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/safety" element={<Safety />} />
+        <Route path="/tools" element={<Tools />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

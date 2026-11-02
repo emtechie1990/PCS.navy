@@ -14,7 +14,7 @@ export function MobileTabBar() {
   const tabs = [
     { to: "/", label: "Home", icon: Home, id: "home", match: (p: string) => p === "/" || p.startsWith("/installation") },
     { to: "/search", label: "Search", icon: Search, id: "search", match: (p: string) => p.startsWith("/search") || p.startsWith("/listing") },
-    { to: "/resources", label: "Resources", icon: BookOpen, id: "resources", match: (p: string) => p.startsWith("/resources") || p.startsWith("/safety") },
+    { to: "/resources", label: "Resources", icon: BookOpen, id: "resources", match: (p: string) => p.startsWith("/resources") || p.startsWith("/safety") || p.startsWith("/tools") },
     { to: me ? (me.role === "admin" ? "/admin" : "/my-listings") : "/login", label: me ? "Account" : "Sign in", icon: User, id: "account", match: (p: string) => ["/login", "/register", "/my-listings", "/admin"].some((x) => p.startsWith(x)) },
   ];
   const item = (t: (typeof tabs)[number]) => (
