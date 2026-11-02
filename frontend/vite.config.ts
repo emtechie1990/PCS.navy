@@ -27,9 +27,10 @@ function brandTokens(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), brandTokens()],
-  resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
+  resolve: { alias: { "@": path.resolve(import.meta.dirname, "./src") } },
   server: {
-    host: true,
+    // Development is local-only unless the developer explicitly opts into another bind address.
+    host: process.env.VITE_HOST || "127.0.0.1",
     port: 3000,
     // Frontend code calls relative /api/*; the backend also owns the server-rendered /near pages.
     proxy: Object.fromEntries(

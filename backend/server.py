@@ -7,6 +7,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import APIRouter, FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -15,6 +16,7 @@ from lib import pages  # noqa: E402
 from lib.brand import BRAND  # noqa: E402
 from lib.db import client, ensure_indexes  # noqa: E402
 from lib.seed_data import seed  # noqa: E402
+from lib.security import SecurityHeadersMiddleware, allowed_hosts, configured_origins  # noqa: E402
 from routers import admin, auth, market, payments  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -50,13 +52,17 @@ api_router.include_router(market.router)
 api_router.include_router(admin.router)
 api_router.include_router(payments.router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+origins = configured_origins()
+if origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_credentials=True,
+        allow_origins=origins,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+        allow_headers=["Content-Type"],
+    )
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts())
 
 app.include_router(api_router)
 app.include_router(pages.router)  # last: ends in the SPA catch-all
