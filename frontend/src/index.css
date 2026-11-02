@@ -1,0 +1,205 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/oswald";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Branch palettes. <html data-brand> is set by index.html (backend fills it per site). Token names
+   (ocp, coyote, gold) come from the Army original and simply map to each branch's primary / secondary / accent. */
+:root, html[data-brand="army"] {
+    --brand-primary: #4B5320;
+    --brand-primary-dark: #353B16;
+    --brand-secondary: #81613C;
+    --brand-accent: #C8A951;
+    --brand-accent-light: #C8A951;
+    --brand-ink: #1A1A1A;
+    --brand-paper: #F5F4F0;
+    --brand-sand: #E9E5DA;
+    --brand-muted: #ECE9E1;
+    --brand-muted-fg: #5B574E;
+    --brand-tint: #EFE7CF;
+    --brand-border: #DAD5C8;
+    --brand-input: #CFC9BA;
+    --camo-base: #23261A;
+    --camo-1: rgba(75,83,32,0.55);
+    --camo-2: rgba(129,97,60,0.35);
+    --camo-3: rgba(26,26,26,0.55);
+    --camo-4: rgba(138,143,94,0.25);
+    --veil: 20,22,14;
+    --ribbon: #4B5320 0 6px, #C8A951 6px 9px, #1A1A1A 9px 11px, #C8A951 11px 14px, #4B5320 14px 20px;
+}
+html[data-brand="navy"] {
+    --brand-primary: #0B1F3A;
+    --brand-primary-dark: #06142A;
+    --brand-secondary: #55606F;
+    --brand-accent: #C5A253;
+    --brand-accent-light: #E8D9A8;
+    --brand-ink: #0A1424;
+    --brand-paper: #F6F5F1;
+    --brand-sand: #E7E4DA;
+    --brand-muted: #ECEAE3;
+    --brand-muted-fg: #55606F;
+    --brand-tint: #EFE8D2;
+    --brand-border: #D8D5CB;
+    --brand-input: #C9C5B8;
+    --camo-base: #0D1B30;
+    --camo-1: rgba(38,70,120,0.55);
+    --camo-2: rgba(80,110,150,0.35);
+    --camo-3: rgba(6,12,24,0.60);
+    --camo-4: rgba(120,140,170,0.25);
+    --veil: 5,12,26;
+    --ribbon: #0B1F3A 0 6px, #C5A253 6px 9px, #FFFFFF 9px 12px, #C5A253 12px 15px, #0B1F3A 15px 21px;
+}
+html[data-brand="airforce"] {
+    --brand-primary: #00308F;
+    --brand-primary-dark: #001F5C;
+    --brand-secondary: #566175;
+    --brand-accent: #FFC72C;
+    --brand-accent-light: #FFC72C;
+    --brand-ink: #0B1426;
+    --brand-paper: #F4F6F9;
+    --brand-sand: #E3E8EF;
+    --brand-muted: #E9EDF3;
+    --brand-muted-fg: #566175;
+    --brand-tint: #FFF3CF;
+    --brand-border: #D3DAE5;
+    --brand-input: #C3CCDA;
+    --camo-base: #141E33;
+    --camo-1: rgba(93,138,168,0.45);
+    --camo-2: rgba(167,169,172,0.30);
+    --camo-3: rgba(11,20,38,0.60);
+    --camo-4: rgba(0,48,143,0.40);
+    --veil: 8,14,30;
+    --ribbon: #00308F 0 6px, #FFC72C 6px 9px, #A7A9AC 9px 12px, #FFC72C 12px 15px, #00308F 15px 21px;
+}
+
+@theme inline {
+    --font-heading: 'Oswald Variable', 'Inter Variable', sans-serif;
+    --font-sans: 'Inter Variable', system-ui, sans-serif;
+    --color-ocp: var(--brand-primary);
+    --color-ocp-dark: var(--brand-primary-dark);
+    --color-coyote: var(--brand-secondary);
+    --color-gold: var(--brand-accent);
+    --color-gold-light: var(--brand-accent-light);
+    --color-ink: var(--brand-ink);
+    --color-paper: var(--brand-paper);
+    --color-sand: var(--brand-sand);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+    --animate-rise: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    --animate-scan: scan 3s linear infinite;
+}
+
+@keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+:root {
+    --background: var(--brand-paper);
+    --foreground: var(--brand-ink);
+    --card: #FFFFFF;
+    --card-foreground: var(--brand-ink);
+    --popover: #FFFFFF;
+    --popover-foreground: var(--brand-ink);
+    --primary: var(--brand-primary);
+    --primary-foreground: var(--brand-paper);
+    --secondary: var(--brand-sand);
+    --secondary-foreground: var(--brand-ink);
+    --muted: var(--brand-muted);
+    --muted-foreground: var(--brand-muted-fg);
+    --accent: var(--brand-tint);
+    --accent-foreground: var(--brand-ink);
+    --destructive: #A3281D;
+    --border: var(--brand-border);
+    --input: var(--brand-input);
+    --ring: var(--brand-primary);
+    --radius: 0.375rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    letter-spacing: 0.01em;
+  }
+}
+
+@layer components {
+  /* CSS-only digital camo: stacked, hard-edged blocky gradients in the branch's tones over near-black. */
+  .camo {
+    background-color: var(--camo-base);
+    background-image:
+      conic-gradient(from 90deg at 12px 12px, var(--camo-1) 25%, transparent 0) 0 0 / 48px 36px,
+      conic-gradient(from 180deg at 18px 6px, var(--camo-2) 25%, transparent 0) 20px 14px / 64px 44px,
+      conic-gradient(from 0deg at 8px 8px, var(--camo-3) 25%, transparent 0) 6px 22px / 40px 52px,
+      conic-gradient(from 270deg at 10px 16px, var(--camo-4) 25%, transparent 0) 30px 4px / 72px 60px;
+  }
+  .camo-veil {
+    background: linear-gradient(100deg, rgba(var(--veil),0.96) 0%, rgba(var(--veil),0.86) 45%, rgba(var(--veil),0.45) 100%);
+  }
+  .stencil {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .ocp-strip {
+    position: relative;
+  }
+  .ocp-strip::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--brand-primary);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.25s ease-out;
+  }
+  .ocp-strip:hover::before,
+  .ocp-strip[data-active="true"]::before {
+    transform: scaleY(1);
+  }
+  .ribbon {
+    background: repeating-linear-gradient(90deg, var(--ribbon));
+  }
+}

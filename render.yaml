@@ -1,0 +1,32 @@
+# Render Blueprint — one web service per site. Set the secret values (sync: false) in the Render dashboard.
+services:
+  - type: web
+    name: pcs-navy
+    runtime: docker
+    plan: starter
+    region: oregon
+    healthCheckPath: /api/
+    autoDeploy: true
+    envVars:
+      - key: BRAND
+        value: navy
+      - key: DB_NAME
+        value: pcs_navy
+      - key: APP_URL
+        value: https://pcs.navy
+      - key: SITE_HOSTS
+        value: pcs.navy,www.pcs.navy
+      - key: CORS_ORIGINS
+        value: https://pcs.navy,https://www.pcs.navy
+      - key: EMAIL_FROM
+        value: no-reply@pcs.navy
+      - key: EMAIL_FROM_NAME
+        value: PCS.navy
+      - key: ADMIN_EMAIL
+        value: prescottmanisela@gmail.com
+      - key: MONGO_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ADMIN_INITIAL_PASSWORD
+        sync: false
