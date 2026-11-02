@@ -3,20 +3,17 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Check, CreditCard, Lock, Star } from "lucide-react";
 import { toast } from "sonner";
-import { SiApplepay, SiCashapp, SiGooglepay, SiPaypal, SiStripe, SiVenmo } from "@icons-pack/react-simple-icons";
+import { SiPaypal, SiStripe } from "@icons-pack/react-simple-icons";
 import { Button } from "@/components/ui/button";
 import { apiGet, apiPost } from "@/lib/api";
 import { money2 as money } from "@/lib/format";
+import { useMe } from "@/lib/hooks";
 import type { CheckoutOut, Listing, PaymentConfig, ProviderId } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const PROVIDER_ICON: Record<ProviderId, typeof SiStripe> = {
   stripe: SiStripe,
-  apple_pay: SiApplepay,
-  google_pay: SiGooglepay,
-  cash_app: SiCashapp,
   paypal: SiPaypal,
-  venmo: SiVenmo,
 };
 
 export default function Upgrade() {
@@ -27,6 +24,7 @@ export default function Upgrade() {
   }, [sp]);
   const listing = useQuery({ queryKey: ["listing", id], queryFn: () => apiGet<Listing>(`/listings/${id}`) });
   const cfg = useQuery({ queryKey: ["payments-config"], queryFn: () => apiGet<PaymentConfig>("/payments/config") });
+  const { data: me } = useMe();
   const [plan, setPlan] = useState("boost-14");
   const [provider, setProvider] = useState<ProviderId>("stripe");
   const checkout = useMutation({
@@ -38,6 +36,8 @@ export default function Upgrade() {
     onError: () => toast.error("Checkout unavailable"),
   });
   const selected = cfg.data?.plans.find((p) => p.id === plan);
+  const isOwner = Boolean(me && listing.data?.owner_id && me.id === listing.data.owner_id);
+  const checkoutReady = Boolean(cfg.data?.live && selected && isOwner && !checkout.isPending);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
@@ -47,8 +47,19 @@ export default function Upgrade() {
 
       {cfg.data && !cfg.data.live && (
         <div className="mt-6 rounded-md border border-gold/70 bg-accent p-4 text-sm" data-testid="upgrade-not-live-notice">
-          <strong className="uppercase">Coming soon:</strong> payments aren't switched on yet. You can preview the checkout —
-          nothing will be charged.
+          <strong className="uppercase">Not working yet:</strong> payment checkout is disabled while the site completes provider testing.
+          No charge can be made.
+        </div>
+      )}
+      {cfg.data?.live && !me && (
+        <div className="mt-6 rounded-md border border-gold/70 bg-accent p-4 text-sm">
+          <strong className="uppercase">Sign in required:</strong> only the account owner can purchase Spotlight.
+          <Link to="/login" className="ml-1 font-semibold underline">Sign in</Link>
+        </div>
+      )}
+      {cfg.data?.live && me && listing.data && !isOwner && (
+        <div className="mt-6 rounded-md border border-gold/70 bg-accent p-4 text-sm" data-testid="upgrade-owner-only-notice">
+          <strong className="uppercase">Owner only:</strong> only the account that created this listing can purchase Spotlight.
         </div>
       )}
 
@@ -89,6 +100,7 @@ export default function Upgrade() {
                     onClick={() => setProvider(pr.id)}
                     data-active={pr.id === provider}
                     className="flex flex-col items-center gap-1.5 rounded-md border border-border p-3 text-xs font-medium transition-[border-color,background-color] duration-150 hover:bg-muted data-[active=true]:border-ocp data-[active=true]:bg-accent"
+                    disabled={!pr.enabled || checkout.isPending}
                     data-testid={`upgrade-provider-${pr.id}`}
                   >
                     <Icon size={28} />
@@ -103,9 +115,9 @@ export default function Upgrade() {
               <span>{selected?.label ?? "—"}</span>
               <span className="font-heading text-2xl" data-testid="upgrade-total">{selected ? money(selected.amount) : "—"}</span>
             </div>
-            <Button className="mt-5 h-12 w-full gap-2 bg-gold text-ink hover:bg-gold/90 active:scale-[0.98]" disabled={checkout.isPending || !selected} onClick={() => checkout.mutate()} data-testid="upgrade-checkout-button">
+            <Button className="mt-5 h-12 w-full gap-2 bg-gold text-ink hover:bg-gold/90 active:scale-[0.98]" disabled={!checkoutReady} onClick={() => checkout.mutate()} data-testid="upgrade-checkout-button">
               {provider === "stripe" ? <CreditCard className="size-4" /> : <Star className="size-4" />}
-              {checkout.isPending ? "Processing…" : `Pay ${selected ? money(selected.amount) : ""}`}
+              {checkout.isPending ? "Processing…" : !cfg.data?.live ? "Payments not working yet" : !me ? "Sign in to continue" : !isOwner ? "Listing owner only" : `Pay ${selected ? money(selected.amount) : ""}`}
             </Button>
             {checkout.data && (
               <p className="mt-3 rounded bg-muted p-3 text-xs" data-testid="upgrade-checkout-result">{checkout.data.message}</p>

@@ -134,7 +134,7 @@ export interface AdminStats {
   launched_installations: number;
 }
 
-export type ProviderId = "stripe" | "apple_pay" | "google_pay" | "cash_app" | "paypal" | "venmo";
+export type ProviderId = "stripe" | "paypal";
 
 export interface PhotoOut {
   id: string;

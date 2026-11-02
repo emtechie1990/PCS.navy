@@ -160,7 +160,7 @@ class PhotoOut(BaseModel):
 
 
 # ---------- payments ----------
-ProviderId = Literal["stripe", "apple_pay", "google_pay", "cash_app", "paypal", "venmo"]
+ProviderId = Literal["stripe", "paypal"]
 
 
 class PaymentProvider(BaseModel):

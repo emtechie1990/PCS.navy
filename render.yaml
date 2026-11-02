@@ -24,4 +24,4 @@ services:
         value: PCS.navy
       - key: ADMIN_EMAIL
         value: prescottmanisela@gmail.com
-      - fromGroup: pcs-shared  # MONGO_URL, ADMIN_INITIAL_PASSWORD, RESEND_API_KEY, STRIPE_*, PAYPAL_* (set once in the Render dashboard)
+      - fromGroup: pcs-shared  # MONGO_URL, ADMIN_INITIAL_PASSWORD, RESEND_API_KEY, PAYMENTS_ENABLED, STRIPE_*, PAYPAL_* (set once in the Render dashboard)

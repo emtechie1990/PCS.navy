@@ -37,9 +37,10 @@ def test_photo_upload_roundtrip(client):
     assert client.post("/photos", files={"file": ("x.txt", b"not an image", "text/plain")}).status_code == 415
 
 
-def test_payments_config_lists_all_methods(client):
+def test_payments_config_is_fail_closed_without_explicit_enablement(client):
     cfg = client.get("/payments/config").json()
-    assert {p["id"] for p in cfg["providers"]} == {"stripe", "apple_pay", "google_pay", "cash_app", "paypal", "venmo"}
+    assert {p["id"] for p in cfg["providers"]} == {"stripe", "paypal"}
+    assert not cfg["live"] and not any(p["enabled"] for p in cfg["providers"])
     assert len(cfg["plans"]) == 3
 
 

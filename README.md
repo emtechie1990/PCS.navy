@@ -47,6 +47,9 @@ Icons for all brands: `cd frontend && npm run icons`.
 | `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_FROM_NAME`, `EMAIL_REPLY_TO` | Resend transactional email (password reset) |
 | `ADMIN_EMAIL`, `ADMIN_INITIAL_PASSWORD` | Owner admin created on first boot |
 | `CORS_ORIGINS` | Comma-separated allowed origins |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Stripe credentials; enter only by the payment-account owner in Render |
+| `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_ENV` | PayPal credentials and `sandbox`/`live` environment |
+| `PAYMENTS_ENABLED` | Fail-closed payment switch. Missing or anything other than exact `true` disables every checkout route. Keep `false` through sandbox checkout and webhook tests. |
 
 ## Deploy (Render + MongoDB Atlas)
 
@@ -68,4 +71,4 @@ owner admin, and 10 sample listings flagged `sample: true` (shown with a "Sample
 when real listings arrive). Admin can toggle installations, require approval for new posts, and work the
 report queue.
 
-Payments (Spotlight upgrades) are scaffolded but not live — see `backend/routers/payments.py`.
+Payments are disabled by default. The payment-account owner enters provider credentials directly in Render; never in source control, GoDaddy, email, or chat. Add `PAYMENTS_ENABLED=false` to the `pcs-shared` environment group so the switch is visible, and set it to `true` only after sandbox checkout and webhook tests pass. Configure the Stripe webhook at `https://<live-domain>/api/payments/stripe/webhook` and store its signing secret in Render.
