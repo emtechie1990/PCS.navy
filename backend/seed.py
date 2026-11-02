@@ -1,4 +1,4 @@
-"""Run `cd /app/backend && python seed.py` — idempotent; same seed the server runs at startup."""
+"""Run `cd backend && python seed.py` — idempotent; same seed the server runs at startup."""
 
 import asyncio
 

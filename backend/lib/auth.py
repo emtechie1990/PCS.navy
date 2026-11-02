@@ -10,7 +10,7 @@ from fastapi import Depends, HTTPException, Request, Response
 
 from lib.db import db
 
-SESSION_COOKIE = "gb_session"
+SESSION_COOKIE = "pcs_session"
 SESSION_DAYS = 14
 
 
