@@ -25,6 +25,24 @@ def test_local_pages(site, client):
     assert site.get(f"/near/{inst['id']}/no-such-town").status_code == 404
 
 
+PNG_1PX = bytes.fromhex("89504e470d0a1a0a0000000d4948445200000001000000010806000000"
+                        "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082")
+
+
+def test_photo_upload_roundtrip(client):
+    r = client.post("/photos", files={"file": ("dot.png", PNG_1PX, "image/png")})
+    assert r.status_code == 200 and r.json()["url"].startswith("/api/photos/")
+    got = client.get(r.json()["url"].removeprefix("/api"))
+    assert got.status_code == 200 and got.headers["content-type"] == "image/png" and got.content == PNG_1PX
+    assert client.post("/photos", files={"file": ("x.txt", b"not an image", "text/plain")}).status_code == 415
+
+
+def test_payments_config_lists_all_methods(client):
+    cfg = client.get("/payments/config").json()
+    assert {p["id"] for p in cfg["providers"]} == {"stripe", "apple_pay", "google_pay", "cash_app", "paypal", "venmo"}
+    assert len(cfg["plans"]) == 3
+
+
 def test_sitemap_and_robots(site):
     sm = site.get("/sitemap.xml")
     assert sm.status_code == 200 and sm.text.count("<loc>") > 1000

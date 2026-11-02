@@ -17,7 +17,7 @@ from lib.brand import BRAND  # noqa: E402
 from lib.db import client, ensure_indexes  # noqa: E402
 from lib.seed_data import seed  # noqa: E402
 from lib.security import SecurityHeadersMiddleware, allowed_hosts, configured_origins  # noqa: E402
-from routers import admin, auth, market, payments  # noqa: E402
+from routers import admin, auth, market, payments, photos  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -51,6 +51,7 @@ api_router.include_router(auth.router)
 api_router.include_router(market.router)
 api_router.include_router(admin.router)
 api_router.include_router(payments.router)
+api_router.include_router(photos.router)
 
 origins = configured_origins()
 if origins:

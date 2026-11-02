@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, ArrowLeft, CalendarClock, CalendarDays, Clock, Eye, ImageOff, Mail, MapPin, MessageSquare, Phone, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -32,6 +32,10 @@ const CONTACT_ICON = { email: Mail, phone: Phone, text: MessageSquare };
 
 export default function ListingDetail() {
   const { id = "" } = useParams();
+  const [sp] = useSearchParams();
+  useEffect(() => {
+    if (sp.get("spotlight")) toast.success("Spotlight is on. Your listing is pinned to the top of the board.");
+  }, [sp]);
   const qc = useQueryClient();
   const { data: me } = useMe();
   const { data: bases } = useInstallations(true);

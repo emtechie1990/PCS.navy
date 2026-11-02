@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Check, CreditCard, Lock, Star } from "lucide-react";
 import { toast } from "sonner";
-import { SiApplepay, SiGooglepay, SiPaypal, SiStripe } from "@icons-pack/react-simple-icons";
+import { SiApplepay, SiCashapp, SiGooglepay, SiPaypal, SiStripe, SiVenmo } from "@icons-pack/react-simple-icons";
 import { Button } from "@/components/ui/button";
 import { apiGet, apiPost } from "@/lib/api";
 import { money2 as money } from "@/lib/format";
@@ -14,11 +14,17 @@ const PROVIDER_ICON: Record<ProviderId, typeof SiStripe> = {
   stripe: SiStripe,
   apple_pay: SiApplepay,
   google_pay: SiGooglepay,
+  cash_app: SiCashapp,
   paypal: SiPaypal,
+  venmo: SiVenmo,
 };
 
 export default function Upgrade() {
   const { id = "" } = useParams();
+  const [sp] = useSearchParams();
+  useEffect(() => {
+    if (sp.get("cancelled")) toast.info("Checkout cancelled. Nothing was charged.");
+  }, [sp]);
   const listing = useQuery({ queryKey: ["listing", id], queryFn: () => apiGet<Listing>(`/listings/${id}`) });
   const cfg = useQuery({ queryKey: ["payments-config"], queryFn: () => apiGet<PaymentConfig>("/payments/config") });
   const [plan, setPlan] = useState("boost-14");
@@ -42,7 +48,7 @@ export default function Upgrade() {
       {cfg.data && !cfg.data.live && (
         <div className="mt-6 rounded-md border border-gold/70 bg-accent p-4 text-sm" data-testid="upgrade-not-live-notice">
           <strong className="uppercase">Coming soon:</strong> payments aren't switched on yet. You can preview the checkout —
-          no card will be charged.
+          nothing will be charged.
         </div>
       )}
 

@@ -13,7 +13,8 @@ def configured_origins() -> list[str]:
 
 def allowed_hosts() -> list[str]:
     configured = [host.strip().lower() for host in os.environ.get("SITE_HOSTS", "").split(",") if host.strip()]
-    return [*configured, "localhost", "127.0.0.1", "testserver"]
+    render = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").lower()  # Render health checks and the *.onrender.com URL
+    return [*configured, *([render] if render else []), "localhost", "127.0.0.1", "testserver"]
 
 
 class SecurityHeadersMiddleware:
@@ -23,7 +24,7 @@ class SecurityHeadersMiddleware:
         (b"x-content-type-options", b"nosniff"),
         (b"x-frame-options", b"DENY"),
         (b"referrer-policy", b"strict-origin-when-cross-origin"),
-        (b"permissions-policy", b"camera=(), microphone=(), geolocation=(), payment=()"),
+        (b"permissions-policy", b"camera=(), microphone=(), geolocation=(), payment=(self)"),
         (b"content-security-policy", b"default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' https: data: blob:; font-src 'self' https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; connect-src 'self'"),
     )
 

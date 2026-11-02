@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, Menu, Plus, ShieldAlert, ShieldCheck, User } from "lucide-react";
 import { Logo } from "@/components/Brand";
+import { HelpBot } from "@/components/HelpBot";
 import { GetAppLink, InstallBanner, MobileTabBar } from "@/components/MobileApp";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -230,6 +231,7 @@ export default function Layout() {
         <Footer />
         <MobileTabBar />
         <InstallBanner />
+        <HelpBot />
         <Toaster richColors mobileOffset={{ bottom: 92 }} />
       </div>
     </BrandContext>

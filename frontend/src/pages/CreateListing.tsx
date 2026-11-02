@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Car, Home as HomeIcon, Info, Plus, Sofa, X } from "lucide-react";
+import { Car, Home as HomeIcon, Info, Plus, Sofa, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { VerifiedRibbon } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { ApiError, apiPost } from "@/lib/api";
 import { useBrand, useInstallations, useMe, useSelectedBase } from "@/lib/hooks";
-import type { Category, ContactMethod, Listing, ListingDetails, ListingIn } from "@/lib/types";
+import type { Category, ContactMethod, Listing, ListingDetails, ListingIn, PhotoOut } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type FieldDef =
@@ -78,7 +78,8 @@ export default function CreateListing() {
   const [price, setPrice] = useState("");
   const [priceUnit, setPriceUnit] = useState<"month" | "total">("month");
   const [available, setAvailable] = useState("");
-  const [photos, setPhotos] = useState<string[]>([""]);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
   const [contactName, setContactName] = useState("");
   const [contactMethod, setContactMethod] = useState<ContactMethod>("email");
   const [contactValue, setContactValue] = useState("");
@@ -112,6 +113,26 @@ export default function CreateListing() {
     setPriceUnit(t === "housing" ? "month" : "total");
   };
 
+  const addPhotos = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setUploading(true);
+    try {
+      for (const file of Array.from(files).slice(0, 10 - photos.length)) {
+        const body = new FormData();
+        body.append("file", file);
+        const res = await fetch("/api/photos", { method: "POST", body });
+        if (!res.ok) {
+          toast.error(((await res.json().catch(() => null)) as { detail?: string } | null)?.detail ?? `Could not upload ${file.name}`);
+          continue;
+        }
+        const { url } = (await res.json()) as PhotoOut;
+        setPhotos((ps) => [...ps, url]);
+      }
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!agree) {
@@ -137,7 +158,7 @@ export default function CreateListing() {
       description: description.trim(),
       price: Number(price || 0),
       price_unit: form.priceUnit ? priceUnit : "total",
-      photos: photos.map((p) => p.trim()).filter((p) => /^https?:\/\//.test(p)),
+      photos,
       contact_name: contactName.trim(),
       contact_method: contactMethod,
       contact_value: contactValue.trim(),
@@ -263,21 +284,23 @@ export default function CreateListing() {
         </fieldset>
 
         <fieldset className="rounded-md border border-border bg-card p-6">
-          <legend className="stencil px-2 text-sm text-coyote">Photos (image URLs)</legend>
-          <div className="space-y-2">
+          <legend className="stencil px-2 text-sm text-coyote">Photos (up to 10)</legend>
+          <div className="flex flex-wrap gap-3">
             {photos.map((p, i) => (
-              <div key={i} className="flex gap-2">
-                <Input value={p} onChange={(e) => setPhotos((ps) => ps.map((x, j) => (j === i ? e.target.value : x)))} placeholder="https://…/photo.jpg" data-testid={`create-photo-input-${i}`} />
-                {p.startsWith("http") && <img src={p} alt="" className="h-10 w-14 shrink-0 rounded object-cover" />}
-                {photos.length > 1 && (
-                  <Button type="button" variant="ghost" size="icon" aria-label="Remove photo" onClick={() => setPhotos((ps) => ps.filter((_, j) => j !== i))} data-testid={`create-photo-remove-${i}`}><X className="size-4" /></Button>
-                )}
+              <div key={p} className="relative">
+                <img src={p} alt="" className="h-24 w-32 rounded border border-border object-cover" data-testid={`create-photo-preview-${i}`} />
+                <button type="button" aria-label="Remove photo" onClick={() => setPhotos((ps) => ps.filter((_, j) => j !== i))} className="absolute -right-2 -top-2 rounded-full bg-ink p-1 text-paper shadow" data-testid={`create-photo-remove-${i}`}><X className="size-3" /></button>
               </div>
             ))}
             {photos.length < 10 && (
-              <Button type="button" variant="outline" size="sm" onClick={() => setPhotos((ps) => [...ps, ""])} data-testid="create-photo-add-button"><Plus className="size-4" /> Add photo</Button>
+              <label className="flex h-24 w-32 cursor-pointer flex-col items-center justify-center gap-1 rounded border border-dashed border-border text-xs font-medium text-muted-foreground hover:bg-muted">
+                <Upload className="size-5" />
+                {uploading ? "Uploading..." : "Add photos"}
+                <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="sr-only" disabled={uploading} onChange={(e) => void addPhotos(e.target.files)} data-testid="create-photo-file-input" />
+              </label>
             )}
           </div>
+          <p className="mt-3 text-xs text-muted-foreground">Take them with your phone or pick from your files. JPEG, PNG or WebP, up to 8 MB each.</p>
         </fieldset>
 
         <fieldset className="rounded-md border border-border bg-card p-6">

@@ -80,6 +80,7 @@ async def search_listings(
         f["$and"] = [{"$or": [{"available_date": None}, {"available_date": {"$lte": available_by}}]}]
     if posted_within_days:
         f["created_at"] = {"$gte": now_utc() - timedelta(days=posted_within_days)}
+    await db.listings.update_many({"featured": True, "featured_until": {"$lt": now_utc()}}, {"$set": {"featured": False}})
     order = {"newest": [("featured", -1), ("created_at", -1)], "oldest": [("created_at", 1)],
              "price_asc": [("price", 1)], "price_desc": [("price", -1)]}[sort]
     total = await db.listings.count_documents(f)

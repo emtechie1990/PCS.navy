@@ -89,6 +89,7 @@ export interface Listing extends ListingIn {
   id: string;
   status: ListingStatus;
   featured: boolean;
+  featured_until: string | null;
   seller_verified: boolean;
   sample: boolean;
   owner_id: string | null;
@@ -133,7 +134,12 @@ export interface AdminStats {
   launched_installations: number;
 }
 
-export type ProviderId = "stripe" | "apple_pay" | "google_pay" | "paypal";
+export type ProviderId = "stripe" | "apple_pay" | "google_pay" | "cash_app" | "paypal" | "venmo";
+
+export interface PhotoOut {
+  id: string;
+  url: string;
+}
 
 export interface PaymentProvider {
   id: ProviderId;

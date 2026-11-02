@@ -96,6 +96,7 @@ class Listing(ListingIn):
     id: str = Field(default_factory=new_id)
     status: ListingStatus = "approved"
     featured: bool = False
+    featured_until: Optional[datetime] = None  # Spotlight expiry
     seller_verified: bool = False
     sample: bool = False  # placeholder posting shown until real listings replace it
     owner_id: Optional[str] = None
@@ -152,9 +153,18 @@ class AdminStats(BaseModel):
     launched_installations: int
 
 
-# ---------- payments (scaffolded, not live) ----------
+# ---------- photos ----------
+class PhotoOut(BaseModel):
+    id: str
+    url: str
+
+
+# ---------- payments ----------
+ProviderId = Literal["stripe", "apple_pay", "google_pay", "cash_app", "paypal", "venmo"]
+
+
 class PaymentProvider(BaseModel):
-    id: Literal["stripe", "apple_pay", "google_pay", "paypal"]
+    id: ProviderId
     label: str
     enabled: bool
 
@@ -175,7 +185,7 @@ class PaymentConfig(BaseModel):
 class CheckoutIn(BaseModel):
     listing_id: str
     plan_id: str
-    provider: Literal["stripe", "apple_pay", "google_pay", "paypal"]
+    provider: ProviderId
 
 
 class CheckoutOut(BaseModel):
