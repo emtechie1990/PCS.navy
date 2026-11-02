@@ -20,18 +20,10 @@ PUBLIC_URL = BRAND["url"]
 C = BRAND["colors"]
 CAMO = BRAND["camo"]
 
-# Same marks as frontend/src/components/Brand.tsx, inlined for the server-rendered pages.
-MARK = {
-    "shield": f'<svg viewBox="0 0 40 46" class="mark"><path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="{C["primary"]}" stroke="{C["accent"]}" stroke-width="2"/>'
-              f'<polygon points="20,11 22.6,18.2 30.2,18.4 24.2,23 26.4,30.2 20,26 13.6,30.2 15.8,23 9.8,18.4 17.4,18.2" fill="{C["accent"]}"/>'
-              f'<path d="M11 34 L20 29.5 L29 34" fill="none" stroke="{C["paper"]}" stroke-width="2"/></svg>',
-    "anchor": f'<svg viewBox="0 0 40 46" class="mark"><path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="{C["primary"]}" stroke="{C["accent"]}" stroke-width="2"/>'
-              f'<circle cx="20" cy="11" r="3" fill="none" stroke="{C["accent"]}" stroke-width="2"/>'
-              f'<path d="M20 14 V36 M13 19 H27 M9 27 C10 33 15 36 20 36 C25 36 30 33 31 27" fill="none" stroke="{C["accent"]}" stroke-width="2.2" stroke-linecap="round"/>'
-              f'<path d="M6 27 L9 24 L12 27 M28 27 L31 24 L34 27" fill="none" stroke="{C["accent"]}" stroke-width="2" stroke-linecap="round"/></svg>',
-    "wings": f'<svg viewBox="0 0 64 40" class="mark"><path d="M32 4 L2 14 L14 18 L4 24 L20 24 L32 36 L44 24 L60 24 L50 18 L62 14 Z" fill="{C["primary"]}" stroke="{C["accent"]}" stroke-width="1.6" stroke-linejoin="round"/>'
-             f'<polygon points="32,10 34.4,16.8 41.6,17 35.9,21.4 38,28.2 32,24.2 26,28.2 28.1,21.4 22.4,17 29.6,16.8" fill="{C["accent"]}"/></svg>',
-}[BRAND["logo"]]
+# Same mark as frontend/src/components/Brand.tsx, inlined for the server-rendered pages.
+MARK = ('<svg viewBox="0 0 40 46" class="mark"><path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="#1A1A1A" stroke="#C8A951" stroke-width="2"/>'
+        '<polygon points="20,11 22.6,18.2 30.2,18.4 24.2,23 26.4,30.2 20,26 13.6,30.2 15.8,23 9.8,18.4 17.4,18.2" fill="#C8A951"/>'
+        '<path d="M11 34 L20 29.5 L29 34" fill="none" stroke="#F5F4F0" stroke-width="2"/></svg>')
 HERO_OPEN = (f'<section class="hero camo"><img class="photo" src="{BRAND["hero"]["image"]}" alt="{e(BRAND["hero"]["alt"])}">'
              '<div class="veil"></div><div class="wrap"><div class="inner"><div class="crumbs">%CRUMBS%</div>')
 HERO_CLOSE = '</div></div><div class="bar"></div></section>'

@@ -9,32 +9,23 @@ const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "brand
 const SIZES = [16, 32, 48, 72, 96, 128, 144, 152, 167, 180, 192, 256, 384, 512];
 
 const BRANDS = {
-  army: { primary: "#4B5320", accent: "#C8A951", paper: "#F5F4F0", base: "#23261A", camo: ["#4B5320", "#81613C", "#1A1A1A", "#8A8F5E"], logo: "shield" },
-  navy: { primary: "#0B1F3A", accent: "#C5A253", paper: "#F6F5F1", base: "#0D1B30", camo: ["#264678", "#506E96", "#060C18", "#788CAA"], logo: "anchor" },
-  airforce: { primary: "#00308F", accent: "#FFC72C", paper: "#F4F6F9", base: "#141E33", camo: ["#5D8AA8", "#A7A9AC", "#0B1426", "#00308F"], logo: "wings" },
+  army: { primary: "#4B5320", accent: "#C8A951", base: "#23261A", camo: ["#4B5320", "#81613C", "#1A1A1A", "#8A8F5E"] },
+  navy: { primary: "#0B1F3A", accent: "#C5A253", base: "#0D1B30", camo: ["#264678", "#506E96", "#060C18", "#788CAA"] },
+  airforce: { primary: "#00308F", accent: "#FFC72C", base: "#141E33", camo: ["#5D8AA8", "#A7A9AC", "#0B1426", "#00308F"] },
 };
 
-const MARK = {
-  shield: (b) => `<svg viewBox="0 0 40 46" xmlns="http://www.w3.org/2000/svg">
-<path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="${b.primary}" stroke="${b.accent}" stroke-width="2"/>
-<path d="M20 5.5 L34 10.2 V22 C34 31.5 27.8 37.4 20 40.6 C12.2 37.4 6 31.5 6 22 V10.2 Z" fill="none" stroke="${b.accent}" stroke-opacity=".45" stroke-width=".8"/>
-<polygon points="20,11 22.6,18.2 30.2,18.4 24.2,23 26.4,30.2 20,26 13.6,30.2 15.8,23 9.8,18.4 17.4,18.2" fill="${b.accent}"/>
-<path d="M11 34 L20 29.5 L29 34" fill="none" stroke="${b.paper}" stroke-width="2" stroke-linecap="square"/></svg>`,
-  anchor: (b) => `<svg viewBox="0 0 40 46" xmlns="http://www.w3.org/2000/svg">
-<path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="${b.primary}" stroke="${b.accent}" stroke-width="2"/>
-<circle cx="20" cy="11" r="3" fill="none" stroke="${b.accent}" stroke-width="2"/>
-<path d="M20 14 V36 M13 19 H27 M9 27 C10 33 15 36 20 36 C25 36 30 33 31 27" fill="none" stroke="${b.accent}" stroke-width="2.2" stroke-linecap="round"/>
-<path d="M6 27 L9 24 L12 27 M28 27 L31 24 L34 27" fill="none" stroke="${b.accent}" stroke-width="2" stroke-linecap="round"/></svg>`,
-  wings: (b) => `<svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg">
-<path d="M32 4 L2 14 L14 18 L4 24 L20 24 L32 36 L44 24 L60 24 L50 18 L62 14 Z" fill="${b.primary}" stroke="${b.accent}" stroke-width="1.6" stroke-linejoin="round"/>
-<polygon points="32,10 34.4,16.8 41.6,17 35.9,21.4 38,28.2 32,24.2 26,28.2 28.1,21.4 22.4,17 29.6,16.8" fill="${b.accent}"/></svg>`,
-};
+// Shared mark (components/Brand.tsx): near-black shield, gold edge and star.
+const MARK = `<svg viewBox="0 0 40 46" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 1 L38 7 V22 C38 34 30 41 20 45 C10 41 2 34 2 22 V7 Z" fill="#1A1A1A" stroke="#C8A951" stroke-width="2"/>
+<path d="M20 5.5 L34 10.2 V22 C34 31.5 27.8 37.4 20 40.6 C12.2 37.4 6 31.5 6 22 V10.2 Z" fill="none" stroke="#C8A951" stroke-opacity=".45" stroke-width=".8"/>
+<polygon points="20,11 22.6,18.2 30.2,18.4 24.2,23 26.4,30.2 20,26 13.6,30.2 15.8,23 9.8,18.4 17.4,18.2" fill="#C8A951"/>
+<path d="M11 34 L20 29.5 L29 34" fill="none" stroke="#F5F4F0" stroke-width="2" stroke-linecap="square"/></svg>`;
 
 // Digital-camo tile + radial veil, then the mark; `maskable` keeps the mark inside the 80% safe zone.
 function icon(b, maskable) {
   const [c1, c2, c3, c4] = b.camo;
   const size = maskable ? 290 : 380;
-  const m = MARK[b.logo](b).replace("<svg ", `<svg x="${(512 - size) / 2}" y="${(512 - size) / 2}" width="${size}" height="${size}" `);
+  const m = MARK.replace("<svg ", `<svg x="${(512 - size) / 2}" y="${(512 - size) / 2}" width="${size}" height="${size}" `);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
 <defs><pattern id="camo" width="96" height="72" patternUnits="userSpaceOnUse">
 <rect width="96" height="72" fill="${b.base}"/><rect x="0" y="0" width="48" height="36" fill="${c1}" opacity=".55"/>

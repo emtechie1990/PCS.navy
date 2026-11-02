@@ -29,7 +29,6 @@ export interface Brand {
   station: string;
   stations: string;
   verified: string;
-  logo: "shield" | "anchor" | "wings";
   theme: string;
   headline: [string, string];
   lede: string;

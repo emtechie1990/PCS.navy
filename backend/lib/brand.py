@@ -157,7 +157,7 @@ BRANDS = {
         "slug": "army",
         "camo": {"base": "#23261A", "blocks": ["rgba(75,83,32,0.55)", "rgba(129,97,60,0.35)", "rgba(26,26,26,0.55)", "rgba(138,143,94,0.25)"], "veil": "20,22,14", "accent_light": "#C8A951"}, "domain": "PCS.army", "url": "https://pcs.army", "branch": "Army",
         "members": "soldiers", "member": "soldier", "station": "installation", "stations": "installations",
-        "verified": ".mil", "logo": "shield", "theme": "#4B5320",
+        "verified": ".mil", "theme": "#4B5320",
         "headline": ["Your next duty station", "starts here."],
         "lede": "Find a home near the gate, sell the truck before you ship out, and pass the couch to the family "
                 "moving in. One marketplace, organized by installation, built for soldiers and their families.",
@@ -181,7 +181,7 @@ BRANDS = {
         "slug": "navy",
         "camo": {"base": "#0D1B30", "blocks": ["rgba(38,70,120,0.55)", "rgba(80,110,150,0.35)", "rgba(6,12,24,0.60)", "rgba(120,140,170,0.25)"], "veil": "5,12,26", "accent_light": "#E8D9A8"}, "domain": "PCS.navy", "url": "https://pcs.navy", "branch": "Navy",
         "members": "Sailors", "member": "Sailor", "station": "duty station", "stations": "duty stations",
-        "verified": ".navy.mil", "logo": "anchor", "theme": "#0B1F3A",
+        "verified": ".navy.mil", "theme": "#0B1F3A",
         "headline": ["Your next homeport", "starts here."],
         "lede": "Find a home near the pier, sell the car before you report aboard, and pass the furniture to the family "
                 "checking in. One marketplace, organized by duty station, built for Sailors and their families.",
@@ -204,7 +204,7 @@ BRANDS = {
         "slug": "airforce",
         "camo": {"base": "#141E33", "blocks": ["rgba(93,138,168,0.45)", "rgba(167,169,172,0.30)", "rgba(11,20,38,0.60)", "rgba(0,48,143,0.40)"], "veil": "8,14,30", "accent_light": "#FFC72C"}, "domain": "PCS.airforce", "url": "https://pcs.airforce", "branch": "Air Force",
         "members": "Airmen", "member": "Airman", "station": "base", "stations": "bases",
-        "verified": ".af.mil", "logo": "wings", "theme": "#00308F",
+        "verified": ".af.mil", "theme": "#00308F",
         "headline": ["Your next assignment", "starts here."],
         "lede": "Find a home outside the gate, sell the truck before your PCS, and pass the couch to the family arriving "
                 "on the next assignment. One marketplace, organized by base, built for Airmen and their families.",
@@ -240,7 +240,7 @@ def resources() -> list[dict]:
 
 def public() -> dict:
     """What the frontend needs (GET /api/brand)."""
-    keys = ("slug", "domain", "url", "branch", "members", "member", "station", "stations", "verified", "logo", "theme",
+    keys = ("slug", "domain", "url", "branch", "members", "member", "station", "stations", "verified", "theme",
             "headline", "lede", "hero", "side", "default_installation")
     return {**{k: BRAND[k] for k in keys}, "disclaimer": disclaimer(), "resources": resources(),
             "siblings": [{"domain": d, "url": u} for d, u in SIBLINGS]}
