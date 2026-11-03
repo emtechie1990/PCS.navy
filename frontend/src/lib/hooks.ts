@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createContext, useCallback, useContext, useSyncExternalStore } from "react";
 import { apiGet } from "./api";
-import type { Brand, Installation, SiteSettings, UserPublic } from "./types";
+import type { AccountProfile, Brand, Installation, SiteSettings, UserPublic } from "./types";
 
 // Layout fetches the brand once and renders the app only after it arrives, so every page
 // below it can read a loaded Brand synchronously.
@@ -23,6 +23,15 @@ export function useMe() {
     queryFn: () => apiGet<UserPublic | null>("/auth/me"),
     retry: false,
     staleTime: 60_000,
+  });
+}
+
+export function useAccountProfile(enabled = true) {
+  return useQuery({
+    queryKey: ["account-profile"],
+    queryFn: () => apiGet<AccountProfile | null>("/accounts/me"),
+    enabled,
+    retry: false,
   });
 }
 

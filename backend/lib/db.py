@@ -36,6 +36,17 @@ INDEXES: dict[str, list[IndexModel]] = {
     "payment_intents": [IndexModel([("id", ASCENDING)], name="id", unique=True),
                         IndexModel([("provider_ref", ASCENDING)], name="provider_ref", unique=True,
                                    sparse=True)],
+    "account_profiles": [IndexModel([("id", ASCENDING)], name="id", unique=True),
+                         IndexModel([("owner_id", ASCENDING)], name="owner_id", unique=True),
+                         IndexModel([("customer_type", ASCENDING)], name="customer_type")],
+    "ad_campaigns": [IndexModel([("id", ASCENDING)], name="id", unique=True),
+                     IndexModel([("owner_id", ASCENDING), ("created_at", DESCENDING)], name="owner_created"),
+                     IndexModel([("installation_id", ASCENDING), ("status", ASCENDING)], name="installation_status")],
+    "billing_plans": [IndexModel([("id", ASCENDING)], name="id", unique=True),
+                      IndexModel([("owner_id", ASCENDING), ("paid_through", ASCENDING)], name="owner_paid_through"),
+                      IndexModel([("stripe_subscription_id", ASCENDING)], name="stripe_subscription_id", sparse=True)],
+    "ad_inquiries": [IndexModel([("id", ASCENDING)], name="id", unique=True),
+                     IndexModel([("campaign_id", ASCENDING), ("created_at", DESCENDING)], name="campaign_created")],
 }
 
 

@@ -92,6 +92,7 @@ export interface Listing extends ListingIn {
   featured_until: string | null;
   seller_verified: boolean;
   sample: boolean;
+  promote: boolean;
   owner_id: string | null;
   report_count: number;
   admin_note: string | null;
@@ -165,4 +166,110 @@ export interface CheckoutOut {
   status: "not_configured" | "requires_redirect" | "succeeded";
   message: string;
   checkout_url: string | null;
+}
+
+export type CustomerType = "apartment_community" | "military_homeowner" | "civilian_homeowner" | "property_management_company" | "real_estate_company";
+
+export interface AccountProfile {
+  id: string;
+  owner_id: string;
+  customer_type: CustomerType;
+  business_name: string;
+  billing_email: string;
+  phone: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BillingQuote {
+  customer_type: CustomerType;
+  property_count: number;
+  currency: "usd";
+  status: "ready_for_payment_setup" | "pricing_required";
+  initial_term_months?: number;
+  initial_amount_cents?: number;
+  annual_renewal_cents?: number;
+  message: string;
+  payments_enabled: boolean;
+}
+
+export type PlanStatus = "pending" | "active" | "past_due" | "canceled";
+
+export interface Plan {
+  id: string;
+  owner_id: string;
+  account_id: string;
+  customer_type: CustomerType;
+  property_count: number;
+  initial_amount_cents: number;
+  annual_renewal_cents: number;
+  status: PlanStatus;
+  auto_renew: boolean;
+  paid_through: string | null;
+  stripe_subscription_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Usage {
+  paid_properties: number;
+  housing_listings: number;
+  enforced: boolean;
+}
+
+export interface AdCampaignIn {
+  name: string;
+  installation_id: string;
+  market: string;
+  starts_on: string;
+  ends_on: string;
+  inquiry_email: string;
+  website_url: string | null;
+  notes: string;
+}
+
+export type CampaignStatus = "pending_quote" | "awaiting_payment" | "active" | "paused" | "ended";
+
+export interface AdCampaign extends AdCampaignIn {
+  id: string;
+  owner_id: string;
+  account_id: string;
+  status: CampaignStatus;
+  price_cents: number | null;
+  paid_at: string | null;
+  impressions: number;
+  clicks: number;
+  inquiries: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Ad {
+  id: string;
+  business_name: string;
+  name: string;
+  market: string;
+  notes: string;
+  website_url: string | null;
+}
+
+export interface InquiryIn {
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string;
+}
+
+export interface Inquiry extends InquiryIn {
+  id: string;
+  campaign_id: string;
+  emailed: boolean;
+  created_at: string;
+}
+
+export interface AdminAccount extends AccountProfile {
+  email: string;
+  housing_listings: number;
+  paid_properties: number;
+  plan_status: PlanStatus | null;
 }

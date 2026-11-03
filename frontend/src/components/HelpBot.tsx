@@ -41,7 +41,7 @@ export function HelpBot() {
     if (has("photo", "picture", "image", "upload", "camera"))
       return { from: "bot", body: <>On the <A to="/create">Post listing</A> form, tap <strong>Add photos</strong> under Photos — it opens your camera roll or files. Up to 10 photos, JPEG/PNG/WebP, 8 MB each. They upload straight to {brand.domain}.</>, chips: ["Sell something"] };
     if (has("spotlight", "featured", "boost", "top of", "pay", "price", "cost", "fee", "free"))
-      return { from: "bot", body: <>Browsing and posting are free. <strong>Spotlight</strong> pins a listing to the top of its board for 7, 14 or 30 days ($4.99–$12.99) — open your listing and tap <em>Spotlight this listing</em>. Card, Apple Pay, Google Pay, Cash App, PayPal and Venmo are supported.</>, chips: ["Sell something", "Find housing"] };
+      return { from: "bot", body: <>Browsing and posting are free. <strong>Spotlight</strong> pins a listing to the top of its board for 7, 14 or 30 days ($4.99–$12.99). Payment checkout is <strong>not working yet</strong> while the payment-account owner completes provider testing; no charge can be made until then.</>, chips: ["Sell something", "Find housing"] };
     if (has("hous", "rent", "home", "apartment", "lease", "bah", "buy a house", "for sale"))
       return { from: "bot", body: <>Housing near {short}: <A to={`/search?installation_id=${baseId}&category=housing`}>browse rentals and homes for sale</A>. Filter by move-in date, price and town. PCSing out? <A to="/create?type=housing">List your home</A> for the family coming in.</>, chips: ["Choose my " + brand.station, "Vehicles", "Get verified"] };
     if (has("car", "truck", "vehicle", "suv", "motorcycle", "rv", "ship my"))

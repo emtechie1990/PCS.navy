@@ -12,6 +12,7 @@ import Tools from "@/pages/Tools";
 import { ForgotPassword, Login, Register, ResetPassword } from "@/pages/Auth";
 import MyListings from "@/pages/MyListings";
 import Upgrade from "@/pages/Upgrade";
+import Business from "@/pages/Business";
 import NotFound from "@/pages/NotFound";
 
 const Admin = lazy(() => import("@/pages/Admin"));
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/my-listings" element={<MyListings />} />
         <Route path="/upgrade/:id" element={<Upgrade />} />
+        <Route path="/business" element={<Business />} />
         <Route path="/admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
         <Route path="*" element={<NotFound />} />
       </Route>

@@ -87,6 +87,7 @@ function AccountMenu() {
         <DropdownMenuLabel className="truncate text-xs">{me.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link to="/my-listings" data-testid="menu-my-listings" />}>My listings</DropdownMenuItem>
+        <DropdownMenuItem render={<Link to="/business" data-testid="menu-business" />}>Business center</DropdownMenuItem>
         {me.role === "admin" && (
           <DropdownMenuItem render={<Link to="/admin" data-testid="menu-admin" />}>
             <ShieldCheck className="size-4" /> Admin review
@@ -172,6 +173,7 @@ function Footer() {
           <ul className="mt-3 space-y-2 text-sm text-paper/75">
             <li><Link to="/search?category=housing" className="hover:text-paper" data-testid="footer-housing-link">Find housing</Link></li>
             <li><Link to="/create?type=housing" className="hover:text-paper" data-testid="footer-list-housing-link">List housing</Link></li>
+            <li><Link to="/business" className="hover:text-paper" data-testid="footer-business-link">Advertise properties</Link></li>
             <li><Link to="/search?category=vehicle" className="hover:text-paper" data-testid="footer-vehicles-link">Buy / sell vehicles</Link></li>
             <li><Link to="/search?category=goods" className="hover:text-paper" data-testid="footer-goods-link">Household goods</Link></li>
             <li><a href="/near" className="hover:text-paper" data-testid="footer-near-link">Browse by town and {station}</a></li>

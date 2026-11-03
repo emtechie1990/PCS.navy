@@ -39,3 +39,23 @@ export function contactHref(method: string, value: string): string {
   const digits = value.replace(/[^\d+]/g, "");
   return method === "text" ? `sms:${digits}` : `tel:${digits}`;
 }
+
+export function cents(n: number | null | undefined): string {
+  return n == null ? "—" : money2(n / 100);
+}
+
+export const CUSTOMER_TYPE_LABEL = {
+  apartment_community: "Apartment community",
+  military_homeowner: "Military homeowner",
+  civilian_homeowner: "Civilian homeowner",
+  property_management_company: "Property management company",
+  real_estate_company: "Real estate company",
+} as const;
+
+export const CAMPAIGN_STATUS_LABEL = {
+  pending_quote: "Awaiting quote",
+  awaiting_payment: "Awaiting payment",
+  active: "Active",
+  paused: "Paused",
+  ended: "Ended",
+} as const;

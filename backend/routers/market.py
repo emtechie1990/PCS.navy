@@ -11,6 +11,7 @@ from lib.auth import get_current_user, get_optional_user
 from lib.db import db
 from models.schemas import (Installation, Listing, ListingIn, ListingPage, MessageOut, Report,
                             ReportIn, SiteSettings, now_utc)
+from routers.business import require_housing_slot
 
 router = APIRouter(tags=["market"])
 
@@ -110,6 +111,8 @@ async def create_listing(body: ListingIn, user: Optional[dict] = Depends(get_opt
     inst = await db.installations.find_one({"id": body.installation_id})
     if not inst:
         raise HTTPException(status_code=400, detail="Unknown installation")
+    if body.category == "housing":
+        await require_housing_slot(user)
     settings = await get_settings()
     listing = Listing(**body.model_dump(), owner_id=user["id"] if user else None,
                       seller_verified=bool(user and user["email"].lower().endswith(brand.BRAND["verified"])),

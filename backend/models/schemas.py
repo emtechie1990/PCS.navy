@@ -99,6 +99,7 @@ class Listing(ListingIn):
     featured_until: Optional[datetime] = None  # Spotlight expiry
     seller_verified: bool = False
     sample: bool = False  # placeholder posting shown until real listings replace it
+    promote: bool = False  # admin-approved for the marketing catalog feed (/api/feeds/catalog.csv)
     owner_id: Optional[str] = None
     report_count: int = 0
     admin_note: Optional[str] = None

@@ -1,5 +1,12 @@
 # Fixes
 
+## 2026-11-02 — Client billing and advertising requirements
+
+- **Problem:** The client's onboarding, advertising and billing spec (five customer types, 6-month prepay with annual renewal, geographic advertising with tracked impressions, clicks and inquiries, admin billing and ad management, social-ad promotion) had only partial support: profiles, quotes and unpriced campaign requests, with admin-editable metrics and no payment path.
+- **Fix:** Stripe property-plan checkout (6 months now, automatic annual renewal) with renewal, failure and cancellation webhooks (idempotent per invoice); paid-slot check on housing posts when live payments are on; admin campaign pricing and campaign checkout; ad delivery on installation boards with server-counted impressions, clicks and inquiries (inquiries emailed via Resend when configured, always stored); admin Accounts, Billing and Advertising tabs; listing promote toggle and a Meta/TikTok catalog CSV feed. Metrics are no longer admin-editable. Sample placeholders are untouched and excluded from promotion.
+- **Verified:** `backend/tests/test_catalog.py` (7 tests against a throwaway local MongoDB database); full backend suite 26 passed against a local server; a 37-step HTTP walkthrough of every new endpoint passed; frontend type-check, lint (3 existing Fast Refresh warnings) and production build passed; the sponsored ad was seen rendering on a local installation board.
+- **Not working yet:** Charging needs the client's Stripe keys, the webhook events listed in the README, sandbox tests, then `PAYMENTS_ENABLED=true`. PayPal is not offered for plans or ads because renewals need a Stripe subscription. Running paid social ads happens in the client's Meta / TikTok accounts using the feed URL.
+
 ## 2026-11-02 — Payment follow-up review (after the fail-closed gate)
 
 - **Problem:** The PayPal return page captured the order again on every refresh, so a second visit after a successful payment hit `ORDER_ALREADY_CAPTURED` and showed "cancelled" for a paid Spotlight. A new Spotlight purchase reset `featured_until` instead of adding to time still running. The backend still accepted six provider ids (Apple Pay, Google Pay, Cash App, Venmo) that the UI and checkout no longer offer, and carried a dead Venmo branch. `PAYMENTS_ENABLED` was missing from the list of keys the `pcs-shared` Render group must hold.

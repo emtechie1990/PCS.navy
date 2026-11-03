@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Building2, ExternalLink, MapPin, Plus } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ArrowRight, Building2, ExternalLink, Mail, MapPin, Megaphone, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { ListingCard, ListingGridSkeleton } from "@/components/ListingCard";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { apiGet } from "@/lib/api";
+import { apiGet, apiPost } from "@/lib/api";
 import { useBrand, useSelectedBase } from "@/lib/hooks";
-import type { Installation as Inst, ListingPage } from "@/lib/types";
+import type { Ad, InquiryIn, Installation as Inst, ListingPage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const TABS = [
@@ -16,6 +21,67 @@ const TABS = [
   { v: "vehicle", l: "Vehicles" },
   { v: "goods", l: "Household goods" },
 ];
+
+// Paid geographic ads for this installation. Fetched once per board visit: each fetch is one impression.
+function InquiryDialog({ ad }: { ad: Ad }) {
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState<InquiryIn>({ name: "", email: "", phone: null, message: "" });
+  const send = useMutation({
+    mutationFn: () => apiPost<{ emailed: boolean; message: string }>(`/ads/${ad.id}/inquiries`, form),
+    onSuccess: (r) => { toast.success(r.message); setOpen(false); setForm({ name: "", email: "", phone: null, message: "" }); },
+    onError: () => toast.error("Could not send. Try again."),
+  });
+  const set = (k: keyof InquiryIn, v: string) => setForm((f) => ({ ...f, [k]: k === "phone" ? v || null : v }));
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={<Button size="sm" className="gap-1.5" data-testid={`ad-contact-${ad.id}`} />}><Mail className="size-3.5" /> Contact</DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="stencil">Contact {ad.business_name}</DialogTitle>
+          <DialogDescription>Your message goes straight to the advertiser.</DialogDescription>
+        </DialogHeader>
+        <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); send.mutate(); }}>
+          <div className="space-y-1.5"><Label htmlFor="inq-name">Name</Label><Input id="inq-name" required value={form.name} onChange={(e) => set("name", e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="inq-email">Email</Label><Input id="inq-email" type="email" required value={form.email} onChange={(e) => set("email", e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="inq-phone">Phone (optional)</Label><Input id="inq-phone" value={form.phone ?? ""} onChange={(e) => set("phone", e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="inq-msg">Message</Label><Textarea id="inq-msg" required minLength={5} value={form.message} onChange={(e) => set("message", e.target.value)} /></div>
+          <Button type="submit" className="w-full" disabled={send.isPending} data-testid="ad-inquiry-send">{send.isPending ? "Sending…" : "Send"}</Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function AdSlot({ installationId }: { installationId: string }) {
+  const ads = useQuery({
+    queryKey: ["ads", installationId],
+    queryFn: () => apiGet<Ad[]>(`/ads?installation_id=${encodeURIComponent(installationId)}`),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+  if (!ads.data?.length) return null;
+  return (
+    <div className="mb-6 space-y-3" data-testid="installation-ads">
+      {ads.data.map((ad) => (
+        <div key={ad.id} className="rounded-md border border-gold/60 bg-accent p-4" data-testid={`ad-${ad.id}`}>
+          <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-coyote"><Megaphone className="size-3" /> Sponsored · {ad.business_name}</p>
+          <h3 className="mt-1 font-heading text-lg uppercase">{ad.name}</h3>
+          <p className="text-xs text-muted-foreground">{ad.market}</p>
+          {ad.notes && <p className="mt-2 whitespace-pre-line text-sm">{ad.notes}</p>}
+          <div className="mt-3 flex flex-wrap gap-2">
+            <InquiryDialog ad={ad} />
+            {ad.website_url && (
+              // a real link so the browser never blocks it; the beacon records the click without delaying it
+              <a href={ad.website_url} target="_blank" rel="noopener noreferrer" onClick={() => navigator.sendBeacon(`/api/ads/${ad.id}/click`)} className={cn(buttonVariants({ size: "sm", variant: "outline" }), "gap-1.5")} data-testid={`ad-visit-${ad.id}`}>
+                <ExternalLink className="size-3.5" /> Visit website
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function Installation() {
   const { id = "" } = useParams();
@@ -118,6 +184,7 @@ export default function Installation() {
         </aside>
 
         <section className="lg:col-span-9">
+          {id && <AdSlot installationId={id} />}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Tabs value={tab} onValueChange={(v) => setTab(String(v))}>
               <TabsList>
